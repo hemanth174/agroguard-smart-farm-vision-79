@@ -58,12 +58,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50">
       <Navigation />
       
       <main className="container mx-auto px-4 py-6 space-y-8">
         {/* Welcome Section */}
-        <div id="dashboard" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
+        <div id="dashboard" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white shadow-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
@@ -84,7 +84,7 @@ const Index = () => {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {quickStats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow">
+            <Card key={index} className="hover:shadow-md transition-shadow bg-white/80 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -124,7 +124,7 @@ const Index = () => {
 
         {/* Services Section */}
         <div id="services">
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl font-bold">{t('farmingServices')}</CardTitle>
               {activeService && (
@@ -145,7 +145,7 @@ const Index = () => {
 
         {/* Market Section */}
         <div id="market">
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
               <CardTitle className="text-xl font-bold">{t('marketPrices')}</CardTitle>
             </CardHeader>
@@ -157,7 +157,7 @@ const Index = () => {
 
         {/* Support Section */}
         <div id="support">
-          <Card>
+          <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
               <CardTitle className="text-xl font-bold">{t('support')} & {t('emergency')}</CardTitle>
             </CardHeader>
