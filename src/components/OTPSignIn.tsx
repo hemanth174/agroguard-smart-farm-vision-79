@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
-import { Phone, MessageSquare, ArrowLeft, CheckCircle, Timer } from 'lucide-react';
+import { Phone, MessageSquare, ArrowLeft, CheckCircle, Timer, Send } from 'lucide-react';
 
 interface CountryCode {
   code: string;
@@ -31,6 +31,7 @@ const OTPSignIn = () => {
   });
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [generatedOTP, setGeneratedOTP] = useState(''); // Store the generated OTP
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -80,6 +81,25 @@ const OTPSignIn = () => {
     return phoneRegex.test(phone.replace(/\s+/g, ''));
   };
 
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  const sendOTPToPhone = async (phoneNumber: string, otp: string) => {
+    // Simulate real-time OTP sending (in real app, this would call your SMS service)
+    console.log(`📱 Sending OTP ${otp} to ${selectedCountry.dialCode} ${phoneNumber}`);
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // In a real app, you would integrate with services like:
+    // - Twilio: https://www.twilio.com/docs/sms
+    // - AWS SNS: https://docs.aws.amazon.com/sns/latest/dg/sms_publish-to-phone.html
+    // - Firebase Auth: https://firebase.google.com/docs/auth/web/phone-auth
+    
+    return { success: true, message: 'OTP sent successfully' };
+  };
+
   const sendOTP = async () => {
     if (!validatePhoneNumber(phoneNumber)) {
       setError('Please enter a valid phone number');
@@ -90,21 +110,27 @@ const OTPSignIn = () => {
     setError('');
 
     try {
-      // Simulate OTP sending
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Generate new OTP
+      const newOTP = generateOTP();
+      setGeneratedOTP(newOTP);
       
-      // For demo purposes, generate a mock OTP
-      const mockOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      console.log('Mock OTP:', mockOTP); // In real app, this would be sent via SMS
+      // Send OTP to phone number (simulated)
+      const result = await sendOTPToPhone(phoneNumber, newOTP);
       
-      setStep('otp');
-      setTimer(60); // 60 second timer
-      setCanResend(false);
-      
-      // Show success message
-      setError('');
+      if (result.success) {
+        setStep('otp');
+        setTimer(60); // 60 second timer
+        setCanResend(false);
+        setError('');
+        
+        // Show the OTP in console for demo (remove in production)
+        console.log('🔐 Generated OTP for demo:', newOTP);
+      } else {
+        setError('Failed to send OTP. Please try again.');
+      }
     } catch (error) {
-      setError('Failed to send OTP. Please try again.');
+      console.error('OTP sending error:', error);
+      setError('Failed to send OTP. Please check your phone number and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -120,16 +146,19 @@ const OTPSignIn = () => {
     setError('');
 
     try {
-      // Simulate OTP verification
+      // Simulate OTP verification delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // For demo purposes, accept any 6-digit code
-      if (otpCode.length === 6) {
+      // Verify OTP against generated OTP
+      if (otpCode === generatedOTP) {
         setStep('profile');
+        setError('');
       } else {
-        setError('Invalid OTP. Please try again.');
+        setError('Invalid OTP. Please check and try again.');
+        setOtpCode(''); // Clear the OTP input
       }
     } catch (error) {
+      console.error('OTP verification error:', error);
       setError('OTP verification failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -152,6 +181,7 @@ const OTPSignIn = () => {
       const fullPhoneNumber = `${selectedCountry.dialCode} ${phoneNumber}`;
       signIn(name, fullPhoneNumber);
     } catch (error) {
+      console.error('Sign in error:', error);
       setError('Sign in failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -162,7 +192,32 @@ const OTPSignIn = () => {
     setCanResend(false);
     setTimer(60);
     setOtpCode('');
-    await sendOTP();
+    setError('');
+    
+    // Generate new OTP
+    const newOTP = generateOTP();
+    setGeneratedOTP(newOTP);
+    
+    try {
+      setIsLoading(true);
+      const result = await sendOTPToPhone(phoneNumber, newOTP);
+      
+      if (result.success) {
+        console.log('🔐 New OTP for demo:', newOTP);
+        setError('');
+      } else {
+        setError('Failed to resend OTP. Please try again.');
+        setCanResend(true);
+        setTimer(0);
+      }
+    } catch (error) {
+      console.error('Resend OTP error:', error);
+      setError('Failed to resend OTP. Please try again.');
+      setCanResend(true);
+      setTimer(0);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -258,11 +313,16 @@ const OTPSignIn = () => {
                   </>
                 ) : (
                   <>
-                    <MessageSquare className="w-4 h-4 mr-2" />
+                    <Send className="w-4 h-4 mr-2" />
                     Send OTP
                   </>
                 )}
               </Button>
+
+              {/* Demo Note */}
+              <div className="text-center text-xs text-gray-500 bg-yellow-50 p-2 rounded">
+                📝 Demo Mode: Check console for generated OTP
+              </div>
             </div>
           )}
 
@@ -307,6 +367,11 @@ const OTPSignIn = () => {
                 </div>
               </div>
 
+              {/* Demo OTP Display */}
+              <div className="text-center text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                💡 Demo OTP: {generatedOTP}
+              </div>
+
               {timer > 0 && (
                 <div className="text-center">
                   <Badge variant="outline" className="gap-1">
@@ -322,9 +387,17 @@ const OTPSignIn = () => {
                     variant="ghost"
                     size="sm"
                     onClick={resendOTP}
+                    disabled={isLoading}
                     className="text-blue-600 hover:text-blue-700"
                   >
-                    Resend OTP
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full mr-1"></div>
+                        Resending...
+                      </>
+                    ) : (
+                      'Resend OTP'
+                    )}
                   </Button>
                 </div>
               )}

@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Upload, Video, AlertTriangle, CheckCircle, Eye, Play, Pause, Download } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, Video, AlertTriangle, CheckCircle, Eye, Play, Pause, Download, Languages } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
 
@@ -14,6 +15,7 @@ interface Detection {
   class: string;
   confidence: number;
   alert: string;
+  alertTelugu: string;
   frame: number;
   timestamp: number;
   bbox?: {
@@ -41,21 +43,52 @@ const DroneVideoDetection = () => {
   const [videoResults, setVideoResults] = useState<VideoDetectionResult[]>([]);
   const [currentVideo, setCurrentVideo] = useState<VideoDetectionResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [alertLanguage, setAlertLanguage] = useState<'en' | 'te'>('en'); // Default to English
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
 
-  // Telugu alerts mapping (similar to your original code)
-  const teluguAlerts = {
-    'person': 'వ్యక్తి కనబడింది! 👤',
-    'car': 'కారు కనబడింది! 🚗',
-    'truck': 'ట్రక్ కనబడింది! 🚛',
-    'fire': 'అగ్ని ప్రమాదం! 🔥 తక్షణ చర్య అవసరం!',
-    'smoke': 'పొగ కనబడింది! 💨 జాగ్రత్త!',
-    'animal': 'జంతువు కనబడింది! 🐄',
-    'bird': 'పక్షి కనబడింది! 🐦',
-    'bicycle': 'సైకిల్ కనబడింది! 🚲',
-    'motorcycle': 'మోటార్‌సైకిల్ కనబడింది! 🏍️',
-    'default': 'వస్తువు కనబడింది!'
+  // English and Telugu alerts mapping
+  const alertMappings = {
+    'person': {
+      en: 'Person detected! 👤',
+      te: 'వ్యక్తి కనబడింది! 👤'
+    },
+    'car': {
+      en: 'Car detected! 🚗',
+      te: 'కారు కనబడింది! 🚗'
+    },
+    'truck': {
+      en: 'Truck detected! 🚛',
+      te: 'ట్రక్ కనబడింది! 🚛'
+    },
+    'fire': {
+      en: 'Fire detected! 🔥 Immediate action required!',
+      te: 'అగ్ని ప్రమాదం! 🔥 తక్షణ చర్య అవసరం!'
+    },
+    'smoke': {
+      en: 'Smoke detected! 💨 Caution!',
+      te: 'పొగ కనబడింది! 💨 జాగ్రత్త!'
+    },
+    'animal': {
+      en: 'Animal detected! 🐄',
+      te: 'జంతువు కనబడింది! 🐄'
+    },
+    'bird': {
+      en: 'Bird detected! 🐦',
+      te: 'పక్షి కనబడింది! 🐦'
+    },
+    'bicycle': {
+      en: 'Bicycle detected! 🚲',
+      te: 'సైకిల్ కనబడింది! 🚲'
+    },
+    'motorcycle': {
+      en: 'Motorcycle detected! 🏍️',
+      te: 'మోటార్‌సైకిల్ కనబడింది! 🏍️'
+    },
+    'default': {
+      en: 'Object detected!',
+      te: 'వస్తువు కనబడింది!'
+    }
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -208,12 +241,14 @@ const DroneVideoDetection = () => {
     for (let i = 0; i < Math.floor(Math.random() * 10) + 1; i++) {
       const className = classes[Math.floor(Math.random() * classes.length)];
       const frame = Math.floor(Math.random() * 3600);
+      const alertData = alertMappings[className] || alertMappings.default;
       
       mockDetections.push({
         id: `det_${Date.now()}_${i}`,
         class: className,
         confidence: 0.5 + Math.random() * 0.5,
-        alert: teluguAlerts[className] || teluguAlerts.default,
+        alert: alertData.en,
+        alertTelugu: alertData.te,
         frame,
         timestamp: frame / 30, // Assuming 30 FPS
         bbox: {
@@ -258,10 +293,24 @@ const DroneVideoDetection = () => {
       {/* Upload Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Video className="h-5 w-5 text-blue-600" />
-            🌾 Village Sentinel – AI వీడియో డిటెక్షన్
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Video className="h-5 w-5 text-blue-600" />
+              🌾 Village Sentinel – AI Video Detection
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-gray-600" />
+              <Select value={alertLanguage} onValueChange={(value: 'en' | 'te') => setAlertLanguage(value)}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="te">తెలుగు</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {/* Drag and Drop Area */}
@@ -282,10 +331,10 @@ const DroneVideoDetection = () => {
               
               <div className="space-y-2">
                 <h3 className="text-xl font-semibold text-gray-900">
-                  📹 వీడియో డ్రాగ్ & డ్రాప్ చేయండి
+                  📹 {alertLanguage === 'te' ? 'వీడియో డ్రాగ్ & డ్రాప్ చేయండి' : 'Drag & Drop Video'}
                 </h3>
                 <p className="text-gray-600">
-                  లేదా క్లిక్ చేసి ఫైల్ ఎంచుకోండి
+                  {alertLanguage === 'te' ? 'లేదా క్లిక్ చేసి ఫైల్ ఎంచుకోండి' : 'Or click to select file'}
                 </p>
                 <p className="text-sm text-gray-500">
                   Supported: MP4, AVI, MOV, WebM (Max 500MB)
@@ -314,7 +363,7 @@ const DroneVideoDetection = () => {
                 ) : (
                   <>
                     <Upload className="h-4 w-4 mr-2" />
-                    ఫైల్ ఎంచుకోండి
+                    {alertLanguage === 'te' ? 'ఫైల్ ఎంచుకోండి' : 'Select File'}
                   </>
                 )}
               </Button>
@@ -328,7 +377,7 @@ const DroneVideoDetection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5 text-green-600" />
-            AI డిటెక్షన్ రిజల్ట్స్ ({videoResults.length})
+            {alertLanguage === 'te' ? 'AI డిటెక్షన్ రిజల్ట్స్' : 'AI Detection Results'} ({videoResults.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -373,7 +422,7 @@ const DroneVideoDetection = () => {
                   <Alert className="mb-4 border-blue-200 bg-blue-50">
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription className="text-blue-800">
-                      🤖 AI విశ్లేషణ ప్రోగ్రెస్‌లో ఉంది... దయచేసి వేచి ఉండండి.
+                      🤖 {alertLanguage === 'te' ? 'AI విశ్లేషణ ప్రోగ్రెస్‌లో ఉంది... దయచేసి వేచి ఉండండి.' : 'AI analysis in progress... Please wait.'}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -403,7 +452,7 @@ const DroneVideoDetection = () => {
                             🎯 Class: {detection.class}
                           </p>
                           <p className="text-sm text-gray-700 mt-1">
-                            {detection.alert}
+                            {alertLanguage === 'te' ? detection.alertTelugu : detection.alert}
                           </p>
                         </div>
                       ))}
@@ -415,7 +464,9 @@ const DroneVideoDetection = () => {
                 {result.processingStatus === 'completed' && result.detections.length === 0 && (
                   <div className="flex items-center gap-2 text-green-600 p-4 bg-green-50 rounded-lg">
                     <CheckCircle className="h-5 w-5" />
-                    <span>✅ ఎలాంటి సమస్యలు కనుగొనబడలేదు - అన్నీ సురక్షితం!</span>
+                    <span>
+                      ✅ {alertLanguage === 'te' ? 'ఎలాంటి సమస్యలు కనుగొనబడలేదు - అన్నీ సురక్షితం!' : 'No issues detected - All clear!'}
+                    </span>
                   </div>
                 )}
 
@@ -423,12 +474,12 @@ const DroneVideoDetection = () => {
                 <div className="flex gap-2 mt-4 pt-4 border-t">
                   <Button variant="outline" size="sm">
                     <Play className="h-4 w-4 mr-2" />
-                    వీడియో చూడండి
+                    {alertLanguage === 'te' ? 'వీడియో చూడండి' : 'View Video'}
                   </Button>
                   {result.detections.length > 0 && (
                     <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                       <Download className="h-4 w-4 mr-2" />
-                      రిపోర్ట్ డౌన్‌లోడ్
+                      {alertLanguage === 'te' ? 'రిపోర్ట్ డౌన్‌లోడ్' : 'Download Report'}
                     </Button>
                   )}
                 </div>
@@ -439,8 +490,12 @@ const DroneVideoDetection = () => {
             {videoResults.length === 0 && (
               <div className="text-center py-12 text-gray-500">
                 <Video className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-lg font-medium mb-2">ఇంకా వీడియోలు అప్‌లోడ్ చేయలేదు</h3>
-                <p className="text-sm">AI విశ్లేషణతో మీ మొదటి డ్రోన్ వీడియోను అప్‌లోడ్ చేయండి</p>
+                <h3 className="text-lg font-medium mb-2">
+                  {alertLanguage === 'te' ? 'ఇంకా వీడియోలు అప్‌లోడ్ చేయలేదు' : 'No videos uploaded yet'}
+                </h3>
+                <p className="text-sm">
+                  {alertLanguage === 'te' ? 'AI విశ్లేషణతో మీ మొదటి డ్రోన్ వీడియోను అప్‌లోడ్ చేయండి' : 'Upload your first drone video with AI analysis'}
+                </p>
               </div>
             )}
           </div>

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -56,18 +55,48 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   });
   const { toast } = useToast();
 
-  // Initialize from localStorage
+  // Initialize from localStorage on app start
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('agroguard-language');
-    const savedUser = localStorage.getItem('agroguard-user');
-    
-    if (savedLanguage) {
-      setLanguageState(savedLanguage);
-    }
-    
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    const initializeApp = () => {
+      try {
+        // Load saved language
+        const savedLanguage = localStorage.getItem('villageeye-language');
+        if (savedLanguage) {
+          setLanguageState(savedLanguage);
+        }
+        
+        // Load saved user data
+        const savedUser = localStorage.getItem('villageeye-user');
+        const savedLoginTime = localStorage.getItem('villageeye-login-time');
+        
+        if (savedUser && savedLoginTime) {
+          const loginTime = parseInt(savedLoginTime);
+          const currentTime = Date.now();
+          const timeDiff = currentTime - loginTime;
+          
+          // Keep user logged in for 30 days (30 * 24 * 60 * 60 * 1000 ms)
+          const maxSessionTime = 30 * 24 * 60 * 60 * 1000;
+          
+          if (timeDiff < maxSessionTime) {
+            const parsedUser = JSON.parse(savedUser);
+            setUser(parsedUser);
+            console.log('✅ User auto-logged in:', parsedUser.name);
+          } else {
+            // Session expired, clear stored data
+            localStorage.removeItem('villageeye-user');
+            localStorage.removeItem('villageeye-login-time');
+            console.log('⚠️ User session expired, cleared data');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing app:', error);
+        // Clear corrupted data
+        localStorage.removeItem('villageeye-user');
+        localStorage.removeItem('villageeye-login-time');
+      }
+    };
+
+    initializeApp();
   }, []);
 
   // Handle online/offline status
@@ -135,29 +164,54 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   const setLanguage = (lang: string) => {
     setLanguageState(lang);
-    localStorage.setItem('agroguard-language', lang);
+    localStorage.setItem('villageeye-language', lang);
   };
 
   const signIn = (name: string, mobile: string) => {
-    // Simulate location detection
-    const mockLocation = 'Telangana, India';
-    const newUser = { name, mobile, location: mockLocation };
-    setUser(newUser);
-    localStorage.setItem('agroguard-user', JSON.stringify(newUser));
-    
-    toast({
-      title: "Welcome to AgroGuard!",
-      description: `Signed in successfully as ${name}`,
-    });
+    try {
+      // Simulate location detection
+      const mockLocation = 'Telangana, India';
+      const newUser = { name, mobile, location: mockLocation };
+      
+      // Set user state
+      setUser(newUser);
+      
+      // Persist user data and login time to localStorage
+      localStorage.setItem('villageeye-user', JSON.stringify(newUser));
+      localStorage.setItem('villageeye-login-time', Date.now().toString());
+      
+      console.log('✅ User signed in and data persisted:', newUser);
+      
+      toast({
+        title: "Welcome to VillageEye!",
+        description: `Signed in successfully as ${name}`,
+      });
+    } catch (error) {
+      console.error('Error during sign in:', error);
+      toast({
+        title: "Sign In Error",
+        description: "Failed to save login data. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const signOut = () => {
-    setUser(null);
-    localStorage.removeItem('agroguard-user');
-    toast({
-      title: "Signed out",
-      description: "You have been signed out successfully.",
-    });
+    try {
+      setUser(null);
+      // Clear persisted data
+      localStorage.removeItem('villageeye-user');
+      localStorage.removeItem('villageeye-login-time');
+      
+      console.log('✅ User signed out and data cleared');
+      
+      toast({
+        title: "Signed out",
+        description: "You have been signed out successfully.",
+      });
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    }
   };
 
   const addAlert = (alert: Omit<Alert, 'id' | 'timestamp'>) => {
