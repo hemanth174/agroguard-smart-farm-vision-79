@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
 
 interface SoilTestData {
-  fieldLocation: string;
   moistureLevel: number;
   phLevel: number;
   nitrogenLevel: number;
@@ -27,7 +25,6 @@ interface SoilRecommendations {
 
 const IoTSoilTestingService = () => {
   const [testData, setTestData] = useState<SoilTestData>({
-    fieldLocation: '',
     moistureLevel: 0,
     phLevel: 0,
     nitrogenLevel: 0,
@@ -42,7 +39,6 @@ const IoTSoilTestingService = () => {
 
   const generateSimulatedData = () => {
     setTestData({
-      fieldLocation: 'Field A-3',
       moistureLevel: Math.random() * 100,
       phLevel: 5.5 + Math.random() * 3, // 5.5 - 8.5
       nitrogenLevel: Math.random() * 100,
@@ -53,15 +49,6 @@ const IoTSoilTestingService = () => {
   };
 
   const analyzeData = () => {
-    if (!testData.fieldLocation.trim()) {
-      toast({
-        title: 'Field location required',
-        description: 'Please enter a field location',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     const rec: SoilRecommendations = {
       moisture: [],
       ph: [],
@@ -69,7 +56,7 @@ const IoTSoilTestingService = () => {
       overall: '',
     };
 
-    // Moisture analysis
+    // moisture analysis
     if (testData.moistureLevel < 30) {
       rec.moisture.push('Increase irrigation frequency');
       rec.moisture.push('Consider drip irrigation system');
@@ -91,13 +78,13 @@ const IoTSoilTestingService = () => {
       rec.ph.push('pH levels are optimal for most crops');
     }
 
-    // Nutrient analysis
+    // nutrient analysis
     if (testData.nitrogenLevel < 40) rec.nutrients.push('Apply nitrogen-rich fertilizer (Urea)');
     if (testData.phosphorusLevel < 20) rec.nutrients.push('Add phosphorus fertilizer (DAP)');
     if (testData.potassiumLevel < 30) rec.nutrients.push('Apply potassium fertilizer (MOP)');
     if (rec.nutrients.length === 0) rec.nutrients.push('Nutrient levels are adequate');
 
-    // Overall recommendation
+    // overall recommendation
     const issues = [];
     if (testData.moistureLevel < 30 || testData.moistureLevel > 80) issues.push('moisture');
     if (testData.phLevel < 6.0 || testData.phLevel > 7.5) issues.push('pH');
@@ -179,15 +166,6 @@ const IoTSoilTestingService = () => {
           <CardTitle>Soil Analysis Parameters</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Field Location</label>
-            <Input
-              placeholder="e.g., Field A-3, North Section"
-              value={testData.fieldLocation}
-              onChange={(e) => setTestData({...testData, fieldLocation: e.target.value})}
-            />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">Moisture Level (%)</label>
@@ -259,7 +237,7 @@ const IoTSoilTestingService = () => {
         </CardContent>
       </Card>
 
-      {/* Results Display */}
+      {/* Results Display section with soil metrics and recommendations */}
       {recommendations && (
         <div className="space-y-4">
           {/* Soil Metrics */}
