@@ -163,35 +163,32 @@ const Index = () => {
               <CardTitle className="text-xl font-bold">{t('support')} & {t('emergency')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                <EmergencySection />
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">{t('contactSupport')}</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                      <span className="text-2xl">📞</span>
-                      <div>
-                        <p className="font-medium">{t('emergency')} / Customer Care</p>
-                        <a href="tel:6305003695" className="text-green-600 hover:underline">
-                          6305003695
-                        </a>
-                      </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">{t('contactSupport')}</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                    <span className="text-2xl">📞</span>
+                    <div>
+                      <p className="font-medium">{t('emergency')} / Customer Care</p>
+                      <a href="tel:6305003695" className="text-green-600 hover:underline">
+                        6305003695
+                      </a>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                      <span className="text-2xl">💬</span>
-                      <div>
-                        <p className="font-medium">{t('aiChatbot')}</p>
-                        <p className="text-sm text-gray-600">{t('aiChatbotDesc')}</p>
-                      </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                    <span className="text-2xl">💬</span>
+                    <div>
+                      <p className="font-medium">{t('aiChatbot')}</p>
+                      <p className="text-sm text-gray-600">{t('aiChatbotDesc')}</p>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                      <span className="text-2xl">📧</span>
-                      <div>
-                        <p className="font-medium">Email Support</p>
-                        <a href="mailto:support@villageeye.com" className="text-purple-600 hover:underline">
-                          support@villageeye.com
-                        </a>
-                      </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                    <span className="text-2xl">📧</span>
+                    <div>
+                      <p className="font-medium">Email Support</p>
+                      <a href="mailto:support@villageeye.com" className="text-purple-600 hover:underline">
+                        support@villageeye.com
+                      </a>
                     </div>
                   </div>
                 </div>
