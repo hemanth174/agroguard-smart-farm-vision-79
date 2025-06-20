@@ -116,7 +116,7 @@ const Index = () => {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Market Prices */}
-            <MarketPricesCard />
+            <MarketPricesCard language={language} />
             
             {/* Emergency Section */}
             <EmergencySection />
@@ -151,7 +151,7 @@ const Index = () => {
               <CardTitle className="text-xl font-bold">{t('marketPrices')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <MarketPricesCard />
+              <MarketPricesCard language={language} />
             </CardContent>
           </Card>
         </div>

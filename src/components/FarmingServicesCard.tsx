@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,10 +8,11 @@ import DrainagePlanner from './DrainagePlanner';
 import { useTranslation, Language } from '@/utils/i18n';
 
 interface FarmingServicesCardProps {
-  language: string;
+  onServiceSelect?: (serviceId: string | null) => void;
 }
 
-const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
+const FarmingServicesCard = ({ onServiceSelect }: FarmingServicesCardProps) => {
+  const { language } = { language: 'en' }; // Get from context or props
   const { t } = useTranslation(language as Language);
 
   const [activeService, setActiveService] = useState<string | null>(null);
@@ -69,14 +71,17 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
   };
 
   const handleServiceClick = (serviceId: string) => {
-    if (serviceId === 'drainage') {
-      setActiveService(activeService === 'drainage' ? null : 'drainage');
-    } else if (serviceId === 'videos') {
-      // Show farming videos
-      setActiveService(activeService === 'videos' ? null : 'videos');
-    } else if (serviceId === 'shopping') {
-      // Show farming shop
-      setActiveService(activeService === 'shopping' ? null : 'shopping');
+    if (onServiceSelect) {
+      onServiceSelect(serviceId);
+    } else {
+      // Fallback to local state if no onServiceSelect provided
+      if (serviceId === 'drainage') {
+        setActiveService(activeService === 'drainage' ? null : 'drainage');
+      } else if (serviceId === 'videos') {
+        setActiveService(activeService === 'videos' ? null : 'videos');
+      } else if (serviceId === 'shopping') {
+        setActiveService(activeService === 'shopping' ? null : 'shopping');
+      }
     }
   };
 
