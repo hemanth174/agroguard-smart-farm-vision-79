@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import {
   Phone, 
   MessageSquare, 
   Bell, 
-  Drone,
+  Plane,
   MapPin,
   Clock,
   Mic,
@@ -57,7 +56,7 @@ const EmergencySection = () => {
       id: 'drone-patrol',
       title: 'Drone Patrol',
       description: 'Monitor with AI drones',
-      icon: Drone,
+      icon: Plane,
       color: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
       urgent: false
     }
@@ -113,7 +112,7 @@ const EmergencySection = () => {
     // In a real app, this would trigger an actual call
     addAlert({
       id: Date.now(),
-      type: 'emergency',
+      type: 'error' as const,
       title: 'Emergency Call Initiated',
       message: 'Emergency services have been contacted.',
       severity: 'high',
@@ -127,7 +126,7 @@ const EmergencySection = () => {
     if (reportForm.description) {
       addAlert({
         id: Date.now(),
-        type: 'report',
+        type: 'info' as const,
         title: `Issue Reported: ${reportForm.type}`,
         message: reportForm.description,
         severity: 'medium',
@@ -283,7 +282,7 @@ const EmergencySection = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-2">
-                        <Drone className="w-4 h-4" />
+                        <Plane className="w-4 h-4" />
                         <span className="font-medium">Drone {drone.id}</span>
                         <Badge variant={drone.status === 'Active' ? 'default' : 'secondary'}>
                           {drone.status}
@@ -304,7 +303,7 @@ const EmergencySection = () => {
               ))}
             </div>
             <Button className="w-full">
-              <Drone className="w-4 h-4 mr-2" />
+              <Plane className="w-4 h-4 mr-2" />
               Deploy New Patrol
             </Button>
           </div>
