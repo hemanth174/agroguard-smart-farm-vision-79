@@ -32,12 +32,6 @@ const Index = () => {
     todayUpdates: 23
   });
 
-  if (!isSignedIn) {
-    return <SignIn />;
-  }
-
-  const activeAlerts = alerts.filter(alert => !alert.resolved);
-
   // Real-time stats updates
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,6 +44,13 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Move the conditional return AFTER all hooks
+  if (!isSignedIn) {
+    return <SignIn />;
+  }
+
+  const activeAlerts = alerts.filter(alert => !alert.resolved);
 
   const quickStats = [
     { label: t('totalFarms'), value: realTimeStats.totalFarms.toLocaleString(), icon: TrendingUp, color: 'text-green-600' },
@@ -157,11 +158,6 @@ const Index = () => {
 
           {/* Right Column */}
           <div className="space-y-4 md:space-y-6 min-w-0">
-            {/* Market Prices */}
-            <div className="overflow-hidden">
-              <MarketPricesCard language={language} />
-            </div>
-            
             {/* Emergency Section */}
             <div className="overflow-hidden">
               <EmergencySection />
