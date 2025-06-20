@@ -9,7 +9,358 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      agri_contracts: {
+        Row: {
+          created_at: string
+          crop_type: string
+          description: string
+          duration: string
+          id: string
+          location: string
+          payment_amount: number | null
+          posted_by: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          crop_type: string
+          description: string
+          duration: string
+          id?: string
+          location: string
+          payment_amount?: number | null
+          posted_by: string
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          crop_type?: string
+          description?: string
+          duration?: string
+          id?: string
+          location?: string
+          payment_amount?: number | null
+          posted_by?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contract_applications: {
+        Row: {
+          applicant_id: string
+          contract_id: string
+          created_at: string
+          id: string
+          message: string | null
+          status: string
+        }
+        Insert: {
+          applicant_id: string
+          contract_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+        }
+        Update: {
+          applicant_id?: string
+          contract_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_applications_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "agri_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_reports: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          location: string | null
+          priority: string
+          report_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          priority?: string
+          report_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          priority?: string
+          report_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          payment_id: string | null
+          status: string
+          total_amount: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payment_id?: string | null
+          status?: string
+          total_amount: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payment_id?: string | null
+          status?: string
+          total_amount?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plant_diseases: {
+        Row: {
+          created_at: string
+          crop_type: string
+          disease_name: string
+          id: string
+          image_url: string | null
+          severity: string
+          solutions: string[]
+          symptoms: string[]
+        }
+        Insert: {
+          created_at?: string
+          crop_type: string
+          disease_name: string
+          id?: string
+          image_url?: string | null
+          severity: string
+          solutions: string[]
+          symptoms: string[]
+        }
+        Update: {
+          created_at?: string
+          crop_type?: string
+          disease_name?: string
+          id?: string
+          image_url?: string | null
+          severity?: string
+          solutions?: string[]
+          symptoms?: string[]
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          in_stock: boolean | null
+          name: string
+          price: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          name: string
+          price: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      soil_test_results: {
+        Row: {
+          field_location: string | null
+          id: string
+          moisture_level: number | null
+          nitrogen_level: number | null
+          ph_level: number | null
+          phosphorus_level: number | null
+          potassium_level: number | null
+          recommendations: string[] | null
+          test_date: string
+          user_id: string
+        }
+        Insert: {
+          field_location?: string | null
+          id?: string
+          moisture_level?: number | null
+          nitrogen_level?: number | null
+          ph_level?: number | null
+          phosphorus_level?: number | null
+          potassium_level?: number | null
+          recommendations?: string[] | null
+          test_date?: string
+          user_id: string
+        }
+        Update: {
+          field_location?: string | null
+          id?: string
+          moisture_level?: number | null
+          nitrogen_level?: number | null
+          ph_level?: number | null
+          phosphorus_level?: number | null
+          potassium_level?: number | null
+          recommendations?: string[] | null
+          test_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      video_guides: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          id: string
+          language: string
+          thumbnail_url: string | null
+          title: string
+          video_url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          language: string
+          thumbnail_url?: string | null
+          title: string
+          video_url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          language?: string
+          thumbnail_url?: string | null
+          title?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

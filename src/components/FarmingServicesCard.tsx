@@ -2,430 +2,349 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   ShoppingCart, 
-  PlayCircle, 
+  Play, 
+  Droplets, 
+  Leaf, 
+  Camera, 
+  Globe, 
+  Zap, 
   Wrench, 
   FileText, 
-  Droplets,
-  Database,
-  Video,
-  Globe,
-  AlertTriangle,
-  Users
+  Phone 
 } from 'lucide-react';
+
+// Import service components
+import ShoppingService from './services/ShoppingSevice';
+import VideoGuidesService from './services/VideoGuidesService';
+import PlantHealthService from './services/PlantHealthService';
+import IoTSoilTestingService from './services/IoTSoilTestingService';
+import EmergencyToolsService from './services/EmergencyToolsService';
 import DrainagePlanner from './DrainagePlanner';
-import PlantHealthDatabase from './PlantHealthDatabase';
-import DroneVideoUpload from './DroneVideoUpload';
-import IoTTester from './IoTTester';
 import ContractsManagement from './ContractsManagement';
-import { useTranslation, Language } from '@/utils/i18n';
-import { useApp } from '@/contexts/AppContext';
 
 interface FarmingServicesCardProps {
-  onServiceSelect?: (serviceId: string | null) => void;
+  onServiceSelect: (service: string | null) => void;
 }
 
 const FarmingServicesCard = ({ onServiceSelect }: FarmingServicesCardProps) => {
-  const { language } = useApp();
-  const { t } = useTranslation(language as Language);
   const [activeService, setActiveService] = useState<string | null>(null);
 
   const services = [
     {
       id: 'shopping',
+      title: '🛒 Shopping',
+      description: 'Browse & buy farming tools, fertilizers, and equipment with secure payment',
       icon: ShoppingCart,
-      title: t('shopping'),
-      description: 'Browse & buy tools, fertilizers, pesticides',
-      color: 'blue',
-      action: t('browse')
+      color: 'bg-blue-500',
     },
     {
-      id: 'videos',
-      icon: PlayCircle,
-      title: t('videoGuides'),
-      description: 'Language-based YouTube video tutorials',
-      color: 'green',
-      action: t('watch')
+      id: 'video-guides',
+      title: '📹 Video Guides',
+      description: 'Watch multilingual farming tutorials and best practices',
+      icon: Play,
+      color: 'bg-purple-500',
     },
     {
       id: 'drainage',
+      title: '🚰 Drainage Planner',
+      description: 'AI-powered drainage system design for your fields',
       icon: Droplets,
-      title: t('drainagePlanner'),
-      description: 'AI suggests pipe layout, length, type',
-      color: 'blue',
-      action: t('planSystem')
+      color: 'bg-cyan-500',
     },
     {
       id: 'plant-health',
-      icon: Database,
-      title: t('plantHealth'),
-      description: 'Detect disease by symptoms, get solutions',
-      color: 'green',
-      action: t('diagnose')
+      title: '🧬 Plant Health',
+      description: 'Detect diseases and get treatment recommendations',
+      icon: Leaf,
+      color: 'bg-green-500',
     },
     {
       id: 'drone-alerts',
-      icon: Video,
-      title: 'Drone AI Alerts',
-      description: 'Upload footage, auto-review crops for issues',
-      color: 'purple',
-      action: 'Upload & Analyze'
+      title: '📣 Drone AI Alerts',
+      description: 'Upload drone footage for automated crop monitoring',
+      icon: Camera,
+      color: 'bg-orange-500',
     },
     {
       id: 'multilingual',
+      title: '🌐 Multilingual Assistant',
+      description: 'Get help in Telugu, Hindi, English, and more languages',
       icon: Globe,
-      title: t('multilingualAssistant'),
-      description: 'All features work in 9 languages',
-      color: 'orange',
-      action: t('useAssistant')
+      color: 'bg-indigo-500',
     },
     {
       id: 'iot-soil',
-      icon: Wrench,
-      title: 'IoT Soil Testing',
-      description: 'Test soil moisture, pH, and nutrients',
-      color: 'purple',
-      action: 'Test Soil'
+      title: '🌱 IoT Soil Testing',
+      description: 'Analyze soil conditions and get AI recommendations',
+      icon: Zap,
+      color: 'bg-yellow-500',
     },
     {
       id: 'smart-tools',
+      title: '🚜 Smart Farming Tools',
+      description: 'Discover and learn about modern farming equipment',
       icon: Wrench,
-      title: 'Smart Farming Tools',
-      description: 'pH meters, battery testers, irrigation kits',
-      color: 'blue',
-      action: 'View Tools'
+      color: 'bg-gray-500',
     },
     {
       id: 'contracts',
+      title: '🤝 Agri Contracts',
+      description: 'Find and apply for farming service contracts',
       icon: FileText,
-      title: t('agriContracts'),
-      description: 'Full-service farming contracts',
-      color: 'orange',
-      action: t('apply')
+      color: 'bg-emerald-500',
     },
     {
       id: 'emergency',
-      icon: AlertTriangle,
-      title: t('emergencyTools'),
-      description: 'Alert Center, Drone Patrol, Emergency Call',
-      color: 'red',
-      action: t('accessTools')
-    }
+      title: '🆘 Emergency Tools',
+      description: 'Quick access to emergency contacts and reporting',
+      icon: Phone,
+      color: 'bg-red-500',
+    },
   ];
 
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: 'text-blue-600 bg-blue-50 border-blue-200',
-      green: 'text-green-600 bg-green-50 border-green-200',
-      purple: 'text-purple-600 bg-purple-50 border-purple-200',
-      orange: 'text-orange-600 bg-orange-50 border-orange-200',
-      red: 'text-red-600 bg-red-50 border-red-200'
-    };
-    return colors[color] || colors.blue;
+  const handleServiceClick = (serviceId: string) => {
+    setActiveService(serviceId);
+    onServiceSelect(serviceId);
   };
 
-  const handleServiceClick = (serviceId: string) => {
-    if (onServiceSelect) {
-      onServiceSelect(serviceId);
-    } else {
-      setActiveService(activeService === serviceId ? null : serviceId);
+  const renderServiceContent = () => {
+    switch (activeService) {
+      case 'shopping':
+        return <ShoppingService />;
+      case 'video-guides':
+        return <VideoGuidesService />;
+      case 'drainage':
+        return <DrainagePlanner />;
+      case 'plant-health':
+        return <PlantHealthService />;
+      case 'iot-soil':
+        return <IoTSoilTestingService />;
+      case 'emergency':
+        return <EmergencyToolsService />;
+      case 'contracts':
+        return <ContractsManagement />;
+      case 'drone-alerts':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">📣 Drone AI Alerts</h2>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">AI-Powered Crop Monitoring</h3>
+              <p className="text-gray-700 mb-4">
+                Upload drone footage to automatically detect:
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                <li>Fire or smoke detection</li>
+                <li>Pest infestations</li>
+                <li>Crop diseases</li>
+                <li>Irrigation issues</li>
+                <li>Animal intrusions</li>
+                <li>Equipment malfunctions</li>
+              </ul>
+              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-yellow-800">
+                  🚧 This feature is currently in development. Mock alerts are being generated based on IoT sensor data.
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      case 'multilingual':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">🌐 Multilingual Assistant</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { lang: 'English', code: 'en', flag: '🇺🇸' },
+                { lang: 'हिंदी (Hindi)', code: 'hi', flag: '🇮🇳' },
+                { lang: 'తెలుగు (Telugu)', code: 'te', flag: '🇮🇳' },
+                { lang: '中文 (Chinese)', code: 'zh', flag: '🇨🇳' },
+                { lang: 'Español (Spanish)', code: 'es', flag: '🇪🇸' },
+                { lang: 'मराठी (Marathi)', code: 'mr', flag: '🇮🇳' },
+                { lang: 'ગુજરાતી (Gujarati)', code: 'gu', flag: '🇮🇳' },
+                { lang: 'ಕನ್ನಡ (Kannada)', code: 'kn', flag: '🇮🇳' },
+                { lang: 'தமிழ் (Tamil)', code: 'ta', flag: '🇮🇳' },
+              ].map((language) => (
+                <Card key={language.code} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-4xl mb-2">{language.flag}</div>
+                    <h3 className="font-semibold">{language.lang}</h3>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Full support for farming guidance, weather alerts, and AI assistance
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Language Features</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                <li>All UI elements translated</li>
+                <li>Voice commands in native language</li>
+                <li>Localized weather and market data</li>
+                <li>Cultural farming practices integrated</li>
+                <li>Region-specific crop recommendations</li>
+              </ul>
+            </div>
+          </div>
+        );
+      case 'smart-tools':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">🚜 Smart Farming Tools</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  name: 'pH Meter',
+                  description: 'Digital soil pH testing device',
+                  price: '₹2,500',
+                  image: '/placeholder.svg',
+                  features: ['Digital display', 'Waterproof', 'Auto calibration']
+                },
+                {
+                  name: 'Moisture Sensor',
+                  description: 'IoT-enabled soil moisture monitor',
+                  price: '₹1,800',
+                  image: '/placeholder.svg',
+                  features: ['Real-time monitoring', 'Mobile alerts', 'Solar powered']
+                },
+                {
+                  name: 'Battery Tester',
+                  description: 'Universal battery voltage tester',
+                  price: '₹500',
+                  image: '/placeholder.svg',
+                  features: ['Digital display', 'Multiple battery types', 'Compact design']
+                },
+                {
+                  name: 'Irrigation Controller',
+                  description: 'Smart irrigation system controller',
+                  price: '₹8,500',
+                  image: '/placeholder.svg',
+                  features: ['App control', 'Weather integration', 'Zone management']
+                },
+                {
+                  name: 'Drone Camera',
+                  description: 'Agricultural monitoring drone',
+                  price: '₹45,000',
+                  image: '/placeholder.svg',
+                  features: ['4K camera', 'GPS navigation', 'Real-time streaming']
+                },
+                {
+                  name: 'Weather Station',
+                  description: 'Personal weather monitoring station',
+                  price: '₹12,000',
+                  image: '/placeholder.svg',
+                  features: ['Multiple sensors', 'Data logging', 'Cloud sync']
+                },
+              ].map((tool, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <img
+                      src={tool.image}
+                      alt={tool.name}
+                      className="w-full h-48 object-cover rounded-lg mb-4"
+                    />
+                    <h3 className="font-semibold text-lg mb-2">{tool.name}</h3>
+                    <p className="text-gray-600 text-sm mb-3">{tool.description}</p>
+                    <div className="text-2xl font-bold text-green-600 mb-3">{tool.price}</div>
+                    <div className="space-y-1 mb-4">
+                      {tool.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm">
+                          <span className="text-green-400">✓</span>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                    <Button className="w-full bg-green-600 hover:bg-green-700">
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
-  // Service-specific content components
-  if (activeService === 'drainage') {
+  if (activeService) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('drainagePlanner')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        <DrainagePlanner />
-      </div>
-    );
-  }
-
-  if (activeService === 'plant-health') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('plantHealth')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        <PlantHealthDatabase />
-      </div>
-    );
-  }
-
-  if (activeService === 'drone-alerts') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Drone AI Alerts</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        <DroneVideoUpload />
-      </div>
-    );
-  }
-
-  if (activeService === 'iot-soil') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">IoT Soil Testing</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        <IoTTester />
-      </div>
-    );
-  }
-
-  if (activeService === 'contracts') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('agriContracts')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        <ContractsManagement />
-      </div>
-    );
-  }
-
-  if (activeService === 'videos') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('videoGuides')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { title: 'Modern Irrigation Techniques', duration: '15:30', language: 'English/Hindi/Telugu' },
-            { title: 'Organic Farming Methods', duration: '12:45', language: 'English/Hindi/Telugu' },
-            { title: 'Crop Disease Prevention', duration: '18:20', language: 'English/Hindi/Telugu' },
-            { title: 'Soil Health Management', duration: '14:15', language: 'English/Hindi/Telugu' },
-            { title: 'Pest Control Strategies', duration: '16:50', language: 'English/Hindi/Telugu' },
-            { title: 'Harvest Optimization', duration: '13:30', language: 'English/Hindi/Telugu' },
-            { title: 'Seed Treatment Guide', duration: '11:20', language: 'English/Hindi/Telugu' },
-            { title: 'How to Use Drone for Sowing', duration: '19:45', language: 'English/Hindi/Telugu' }
-          ].map((video, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-4">
-                <div className="bg-gray-200 rounded-lg h-32 mb-3 flex items-center justify-center">
-                  <PlayCircle className="h-12 w-12 text-gray-400" />
-                </div>
-                <h3 className="font-medium text-sm mb-2">{video.title}</h3>
-                <div className="flex justify-between items-center text-xs text-gray-500">
-                  <span>{video.duration}</span>
-                  <Badge variant="outline" className="text-xs">{video.language}</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (activeService === 'shopping') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('farmingShop')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { name: 'Premium Seeds', price: '₹500/kg', category: 'Seeds', inStock: true },
-            { name: 'Organic Fertilizer', price: '₹800/bag', category: 'Fertilizers', inStock: true },
-            { name: 'Electric Sprayer', price: '₹3,500', category: 'Tools', inStock: true },
-            { name: 'Soil Testing Kit', price: '₹2,200', category: 'Testing', inStock: true },
-            { name: 'Rain Sensors', price: '₹1,800', category: 'IoT', inStock: false },
-            { name: 'Vermicompost', price: '₹400/bag', category: 'Fertilizers', inStock: true },
-            { name: 'Mulching Sheets', price: '₹150/meter', category: 'Materials', inStock: true },
-            { name: 'Drip Irrigation Kit', price: '₹5,000/set', category: 'Irrigation', inStock: true }
-          ].map((product, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-4">
-                <div className="bg-gray-100 rounded-lg h-24 mb-3 flex items-center justify-center">
-                  <ShoppingCart className="h-8 w-8 text-gray-400" />
-                </div>
-                <h3 className="font-medium text-sm mb-1">{product.name}</h3>
-                <p className="text-xs text-gray-500 mb-2">{product.category}</p>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-green-600">{product.price}</span>
-                  <Badge variant={product.inStock ? 'outline' : 'destructive'}>
-                    {product.inStock ? 'In Stock' : 'Out of Stock'}
-                  </Badge>
-                </div>
-                <Button 
-                  size="sm" 
-                  className="w-full" 
-                  disabled={!product.inStock}
-                  variant={product.inStock ? 'default' : 'outline'}
-                >
-                  {product.inStock ? 'Add to Cart' : 'Notify Me'}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (activeService === 'smart-tools') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Smart Farming Tools</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { name: 'Moisture Tester', description: 'Digital soil moisture meter', status: 'Available' },
-            { name: 'pH Meter', description: 'Soil pH testing device', status: 'Available' },
-            { name: 'Drone Battery Health Monitor', description: 'Monitor drone battery status', status: 'Coming Soon' },
-            { name: 'Smart Irrigation Valve Controller', description: 'Automated water control', status: 'Available' },
-            { name: 'NPK Soil Tester', description: 'Test nitrogen, phosphorus, potassium', status: 'Available' },
-            { name: 'Weather Station', description: 'Local weather monitoring', status: 'Available' }
-          ].map((tool, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-4">
-                <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg h-24 mb-3 flex items-center justify-center">
-                  <Wrench className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="font-medium text-sm mb-2">{tool.name}</h3>
-                <p className="text-xs text-gray-500 mb-3">{tool.description}</p>
-                <Badge variant={tool.status === 'Available' ? 'outline' : 'secondary'}>
-                  {tool.status}
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (activeService === 'emergency') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('emergencyTools')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[
-            { name: 'Alert Center', description: 'View all active alerts and warnings', color: 'red' },
-            { name: 'Drone Patrol', description: 'Emergency drone surveillance', color: 'blue' },
-            { name: 'Emergency Call', description: 'Direct call to emergency services', color: 'red' },
-            { name: 'Report Issue', description: 'Report farming emergencies or issues', color: 'orange' }
-          ].map((tool, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className={`w-12 h-12 rounded-full mb-4 flex items-center justify-center ${getColorClasses(tool.color)}`}>
-                  <AlertTriangle className="h-6 w-6" />
-                </div>
-                <h3 className="font-medium text-lg mb-2">{tool.name}</h3>
-                <p className="text-sm text-gray-500 mb-4">{tool.description}</p>
-                <Button className="w-full" variant={tool.color === 'red' ? 'destructive' : 'default'}>
-                  Access {tool.name}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (activeService === 'multilingual') {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">{t('multilingualAssistant')}</h2>
-          <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('backToServices')}
-          </Button>
-        </div>
-        
-        <div className="text-center py-8">
-          <Globe className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold mb-4">AI Assistant Available in 9 Languages</h3>
-          <p className="text-gray-600 mb-6">
-            Our intelligent farming assistant speaks your language and understands local farming practices.
-          </p>
-          
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4 max-w-2xl mx-auto">
-            {[
-              { lang: 'English', flag: '🇺🇸' },
-              { lang: 'हिंदी', flag: '🇮🇳' },
-              { lang: 'తెలుగు', flag: '🇮🇳' },
-              { lang: '中文', flag: '🇨🇳' },
-              { lang: 'Español', flag: '🇪🇸' },
-              { lang: 'मराठी', flag: '🇮🇳' },
-              { lang: 'ગુજરાતી', flag: '🇮🇳' },
-              { lang: 'ಕನ್ನಡ', flag: '🇮🇳' },
-              { lang: 'தமிழ்', flag: '🇮🇳' }
-            ].map((item, index) => (
-              <div key={index} className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-2xl mb-1">{item.flag}</div>
-                <div className="text-sm font-medium">{item.lang}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="space-y-4">
+        <Button 
+          variant="outline" 
+          onClick={() => {
+            setActiveService(null);
+            onServiceSelect(null);
+          }}
+          className="mb-4"
+        >
+          ← Back to Services
+        </Button>
+        {renderServiceContent()}
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('farmingServices')}</h2>
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">🌾 Comprehensive Farming Services</h2>
+        <p className="text-gray-600">Everything you need for modern, efficient farming</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services.map((service, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow border-2 cursor-pointer" onClick={() => handleServiceClick(service.id)}>
-            <CardHeader className="text-center pb-4">
-              <div className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center ${getColorClasses(service.color)}`}>
-                <service.icon className="h-8 w-8" />
+        {services.map((service) => (
+          <Card 
+            key={service.id} 
+            className="hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105"
+            onClick={() => handleServiceClick(service.id)}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className={`p-3 rounded-lg ${service.color} bg-opacity-10`}>
+                  <service.icon className={`h-6 w-6 ${service.color.replace('bg-', 'text-')}`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">{service.title}</h3>
+                </div>
               </div>
-              <CardTitle className="text-lg">{service.title}</CardTitle>
-              <p className="text-sm text-gray-600">{service.description}</p>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Button className="w-full" variant="outline">
-                {service.action}
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {service.description}
+              </p>
+              <Button 
+                variant="outline" 
+                className="w-full mt-4 hover:bg-green-50 hover:border-green-500"
+              >
+                Access Service →
               </Button>
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Quick Stats */}
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-green-600">10</div>
+            <div className="text-sm text-gray-600">Services Available</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-blue-600">9</div>
+            <div className="text-sm text-gray-600">Languages Supported</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-purple-600">24/7</div>
+            <div className="text-sm text-gray-600">AI Assistant</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-orange-600">100+</div>
+            <div className="text-sm text-gray-600">Products Available</div>
+          </div>
+        </div>
       </div>
     </div>
   );
