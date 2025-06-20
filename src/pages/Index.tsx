@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
@@ -6,7 +5,7 @@ import SignIn from '@/components/SignIn';
 import Navigation from '@/components/Navigation';
 import ChatbotAdvanced from '@/components/ChatbotAdvanced';
 import IoTDashboard from '@/components/IoTDashboard';
-import WeatherDashboard from '@/components/WeatherDashboard';
+import WeatherService from '@/components/WeatherService';
 import FarmingServicesCard from '@/components/FarmingServicesCard';
 import DroneVideoUpload from '@/components/DroneVideoUpload';
 import DroneMonitor from '@/components/DroneMonitor';
@@ -106,8 +105,8 @@ const Index = () => {
             {/* IoT Dashboard */}
             <IoTDashboard />
             
-            {/* Weather Dashboard */}
-            <WeatherDashboard />
+            {/* Enhanced Weather Service */}
+            <WeatherService />
             
             {/* IoT Tester */}
             <IoTTester />

@@ -2,211 +2,323 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sun, Cloud, CloudRain, Thermometer, Droplets, Wind, Sunrise, Sunset } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sun, Cloud, CloudRain, Thermometer, Droplets, Wind, Sunrise, Sunset, MapPin, RefreshCw } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
+
+interface HourlyWeather {
+  time: string;
+  temp: number;
+  humidity: number;
+  description: string;
+  icon: string;
+}
 
 interface WeatherData {
   location: string;
-  temperature: number;
-  humidity: number;
-  windSpeed: number;
-  description: string;
-  rainChance: number;
+  coordinates: { lat: number; lon: number };
+  current: {
+    temperature: number;
+    humidity: number;
+    windSpeed: number;
+    description: string;
+    icon: string;
+  };
+  hourly: HourlyWeather[];
   sunrise: string;
   sunset: string;
-  icon: string;
+  lastUpdated: string;
 }
 
 const WeatherService = () => {
   const { user, language } = useApp();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const translations = {
     en: {
-      title: 'Live Weather',
+      title: 'Live Weather Forecast',
+      currentWeather: 'Current Weather',
+      hourlyForecast: 'Hourly Forecast',
       temperature: 'Temperature',
       humidity: 'Humidity',
       windSpeed: 'Wind Speed',
-      rainChance: 'Rain Chance',
       sunrise: 'Sunrise',
       sunset: 'Sunset',
-      loading: 'Loading weather...',
-      farmingConditions: 'Farming Conditions',
-      excellent: 'Excellent',
-      good: 'Good',
-      fair: 'Fair'
+      loading: 'Loading weather data...',
+      refresh: 'Refresh',
+      lastUpdated: 'Last updated',
+      getLocation: 'Get My Location',
+      locationError: 'Unable to get location'
     },
     hi: {
-      title: 'मौसम की जानकारी',
+      title: 'मौसम पूर्वानुमान',
+      currentWeather: 'वर्तमान मौसम',
+      hourlyForecast: 'घंटेवार पूर्वानुमान',
       temperature: 'तापमान',
       humidity: 'आर्द्रता',
       windSpeed: 'हवा की गति',
-      rainChance: 'बारिश की संभावना',
       sunrise: 'सूर्योदय',
       sunset: 'सूर्यास्त',
-      loading: 'मौसम लोड हो रहा है...',
-      farmingConditions: 'खेती की स्थिति',
-      excellent: 'उत्कृष्ट',
-      good: 'अच्छी',
-      fair: 'ठीक'
+      loading: 'मौसम डेटा लोड हो रहा है...',
+      refresh: 'रीफ्रेश करें',
+      lastUpdated: 'अंतिम अपडेट',
+      getLocation: 'मेरा स्थान प्राप्त करें',
+      locationError: 'स्थान प्राप्त नहीं हो सका'
     },
     te: {
-      title: 'ప్రత్యక్ష వాతావరణం',
+      title: 'ప్రత్యక్ష వాతావరణ సూచన',
+      currentWeather: 'ప్రస్తుత వాతావరణం',
+      hourlyForecast: 'గంటవారీ సూచన',
       temperature: 'ఉష్ణోగ్రత',
       humidity: 'తేమ',
       windSpeed: 'గాలి వేగం',
-      rainChance: 'వర్షం అవకాశం',
       sunrise: 'సూర్యోదయం',
       sunset: 'సూర్యాస్తమయం',
-      loading: 'వాతావరణం లోడ్ అవుతోంది...',
-      farmingConditions: 'వ్యవసాయ పరిస్థితులు',
-      excellent: 'అద్భుతం',
-      good: 'మంచిది',
-      fair: 'సరేకం'
+      loading: 'వాతావరణ డేటా లోడ్ అవుతోంది...',
+      refresh: 'రీఫ్రెష్',
+      lastUpdated: 'చివరిసారి అప్‌డేట్',
+      getLocation: 'నా లొకేషన్ పొందండి',
+      locationError: 'లొకేషన్ పొందలేకపోయింది'
     }
   };
 
   const t = translations[language] || translations.en;
 
-  useEffect(() => {
-    // Simulate weather API call
-    const fetchWeather = async () => {
-      setLoading(true);
-      
-      // Mock weather data based on user location
-      const mockWeatherData: WeatherData = {
-        location: user?.location || 'Telangana, India',
-        temperature: 28 + Math.floor(Math.random() * 8), // 28-35°C
-        humidity: 60 + Math.floor(Math.random() * 25), // 60-85%
-        windSpeed: 5 + Math.floor(Math.random() * 10), // 5-15 km/h
-        description: ['Clear Sky', 'Partly Cloudy', 'Sunny'][Math.floor(Math.random() * 3)],
-        rainChance: Math.floor(Math.random() * 30), // 0-30%
-        sunrise: '06:15 AM',
-        sunset: '06:45 PM',
-        icon: 'sunny'
-      };
-
-      setTimeout(() => {
-        setWeather(mockWeatherData);
-        setLoading(false);
-      }, 1000);
-    };
-
-    fetchWeather();
-  }, [user?.location]);
-
-  const getWeatherIcon = (description: string) => {
-    if (description.includes('Rain')) return <CloudRain className="h-8 w-8 text-blue-500" />;
-    if (description.includes('Cloud')) return <Cloud className="h-8 w-8 text-gray-500" />;
-    return <Sun className="h-8 w-8 text-yellow-500" />;
+  // Get user's current location
+  const getCurrentLocation = () => {
+    setLoading(true);
+    setError(null);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeatherData(latitude, longitude);
+        },
+        (error) => {
+          console.error('Location error:', error);
+          setError(t.locationError);
+          // Fallback to mock data with user's stored location
+          fetchMockWeatherData();
+        }
+      );
+    } else {
+      setError(t.locationError);
+      fetchMockWeatherData();
+    }
   };
 
-  const getFarmingCondition = (temp: number, humidity: number, rain: number) => {
-    if (temp >= 25 && temp <= 30 && humidity >= 60 && humidity <= 75 && rain <= 20) {
-      return { status: t.excellent, color: 'bg-green-100 text-green-800' };
-    } else if (temp >= 20 && temp <= 35 && humidity >= 50 && humidity <= 85 && rain <= 40) {
-      return { status: t.good, color: 'bg-yellow-100 text-yellow-800' };
-    } else {
-      return { status: t.fair, color: 'bg-orange-100 text-orange-800' };
+  // TODO: Replace with actual OpenWeatherMap API call
+  const fetchWeatherData = async (lat: number, lon: number) => {
+    try {
+      // This is where you would call the actual API:
+      // const API_KEY = 'YOUR_OPENWEATHER_API_KEY'; // Store in Supabase secrets
+      // const response = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
+      // const data = await response.json();
+      
+      // For now, using enhanced mock data
+      await fetchMockWeatherData(lat, lon);
+    } catch (error) {
+      console.error('Weather API error:', error);
+      setError('Failed to fetch weather data');
+      setLoading(false);
     }
+  };
+
+  const fetchMockWeatherData = async (lat?: number, lon?: number) => {
+    // Enhanced mock data that simulates real API response
+    const mockData: WeatherData = {
+      location: user?.location || 'Telangana, India',
+      coordinates: { 
+        lat: lat || 17.3850, 
+        lon: lon || 78.4867 
+      },
+      current: {
+        temperature: 28 + Math.floor(Math.random() * 8),
+        humidity: 60 + Math.floor(Math.random() * 25),
+        windSpeed: 5 + Math.floor(Math.random() * 10),
+        description: ['Clear Sky', 'Partly Cloudy', 'Sunny', 'Light Clouds'][Math.floor(Math.random() * 4)],
+        icon: 'sunny'
+      },
+      hourly: Array.from({ length: 12 }, (_, i) => ({
+        time: new Date(Date.now() + i * 3600000).toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          hour12: true 
+        }),
+        temp: 25 + Math.floor(Math.random() * 10),
+        humidity: 50 + Math.floor(Math.random() * 30),
+        description: ['Clear', 'Cloudy', 'Sunny'][Math.floor(Math.random() * 3)],
+        icon: 'sunny'
+      })),
+      sunrise: '06:15 AM',
+      sunset: '06:45 PM',
+      lastUpdated: new Date().toLocaleTimeString()
+    };
+
+    setTimeout(() => {
+      setWeather(mockData);
+      setLoading(false);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  const getWeatherIcon = (description: string) => {
+    if (description.toLowerCase().includes('rain')) return <CloudRain className="h-6 w-6 text-blue-500" />;
+    if (description.toLowerCase().includes('cloud')) return <Cloud className="h-6 w-6 text-gray-500" />;
+    return <Sun className="h-6 w-6 text-yellow-500" />;
   };
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-gradient-to-br from-blue-50 to-green-50 border-0 shadow-xl">
         <CardHeader>
-          <CardTitle>{t.title}</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-2xl font-bold text-gray-800">
+            <Sun className="h-7 w-7 text-yellow-500" />
+            {t.title}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">{t.loading}</p>
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-medium">{t.loading}</p>
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  if (!weather) return null;
-
-  const farmingCondition = getFarmingCondition(weather.temperature, weather.humidity, weather.rainChance);
+  if (error || !weather) {
+    return (
+      <Card className="bg-gradient-to-br from-red-50 to-orange-50 border-red-200 shadow-xl">
+        <CardHeader>
+          <CardTitle className="text-red-700">{t.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-red-600 mb-4">{error || 'Failed to load weather data'}</p>
+            <Button onClick={getCurrentLocation} className="bg-green-600 hover:bg-green-700">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              {t.refresh}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          {t.title}
-          {getWeatherIcon(weather.description)}
-        </CardTitle>
-        <p className="text-sm text-gray-600">{weather.location}</p>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Main Weather Info */}
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gray-900">{weather.temperature}°C</div>
-            <p className="text-gray-600">{weather.description}</p>
-            <Badge className={farmingCondition.color}>
-              {t.farmingConditions}: {farmingCondition.status}
-            </Badge>
+    <div className="space-y-6">
+      {/* Current Weather Card */}
+      <Card className="bg-gradient-to-br from-blue-50 via-white to-green-50 border-0 shadow-2xl hover:shadow-3xl transition-all duration-300">
+        <CardHeader className="pb-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-2xl font-bold text-gray-800 mb-2">
+                {getWeatherIcon(weather.current.description)}
+                {t.currentWeather}
+              </CardTitle>
+              <div className="flex items-center gap-2 text-gray-600">
+                <MapPin className="h-4 w-4" />
+                <span className="font-medium">{weather.location}</span>
+              </div>
+            </div>
+            <Button 
+              onClick={getCurrentLocation} 
+              variant="outline" 
+              size="sm"
+              className="hover:bg-green-50 border-green-300"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              {t.refresh}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Main Temperature Display */}
+          <div className="text-center mb-6">
+            <div className="text-6xl font-bold text-gray-900 mb-2">
+              {weather.current.temperature}°C
+            </div>
+            <p className="text-xl text-gray-600 font-medium">{weather.current.description}</p>
+            <p className="text-sm text-gray-500 mt-2">
+              {t.lastUpdated}: {weather.lastUpdated}
+            </p>
           </div>
 
           {/* Weather Details Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-2 p-2 bg-blue-50 rounded">
-              <Thermometer className="h-4 w-4 text-blue-600" />
-              <div>
-                <p className="text-xs text-gray-600">{t.temperature}</p>
-                <p className="font-medium">{weather.temperature}°C</p>
-              </div>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="text-center p-4 bg-white bg-opacity-60 rounded-xl shadow-sm">
+              <Droplets className="h-6 w-6 text-blue-500 mx-auto mb-2" />
+              <p className="text-xs text-gray-600 font-medium">{t.humidity}</p>
+              <p className="text-lg font-bold text-gray-900">{weather.current.humidity}%</p>
             </div>
             
-            <div className="flex items-center gap-2 p-2 bg-green-50 rounded">
-              <Droplets className="h-4 w-4 text-green-600" />
-              <div>
-                <p className="text-xs text-gray-600">{t.humidity}</p>
-                <p className="font-medium">{weather.humidity}%</p>
-              </div>
+            <div className="text-center p-4 bg-white bg-opacity-60 rounded-xl shadow-sm">
+              <Wind className="h-6 w-6 text-gray-500 mx-auto mb-2" />
+              <p className="text-xs text-gray-600 font-medium">{t.windSpeed}</p>
+              <p className="text-lg font-bold text-gray-900">{weather.current.windSpeed} km/h</p>
             </div>
             
-            <div className="flex items-center gap-2 p-2 bg-purple-50 rounded">
-              <Wind className="h-4 w-4 text-purple-600" />
-              <div>
-                <p className="text-xs text-gray-600">{t.windSpeed}</p>
-                <p className="font-medium">{weather.windSpeed} km/h</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2 p-2 bg-orange-50 rounded">
-              <CloudRain className="h-4 w-4 text-orange-600" />
-              <div>
-                <p className="text-xs text-gray-600">{t.rainChance}</p>
-                <p className="font-medium">{weather.rainChance}%</p>
-              </div>
+            <div className="text-center p-4 bg-white bg-opacity-60 rounded-xl shadow-sm">
+              <Thermometer className="h-6 w-6 text-red-500 mx-auto mb-2" />
+              <p className="text-xs text-gray-600 font-medium">{t.temperature}</p>
+              <p className="text-lg font-bold text-gray-900">{weather.current.temperature}°C</p>
             </div>
           </div>
 
           {/* Sun Times */}
-          <div className="flex justify-between items-center pt-4 border-t">
-            <div className="flex items-center gap-2">
-              <Sunrise className="h-4 w-4 text-orange-500" />
+          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <Sunrise className="h-5 w-5 text-orange-600" />
+              </div>
               <div>
-                <p className="text-xs text-gray-600">{t.sunrise}</p>
-                <p className="font-medium">{weather.sunrise}</p>
+                <p className="text-xs text-gray-600 font-medium">{t.sunrise}</p>
+                <p className="font-bold text-gray-900">{weather.sunrise}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Sunset className="h-4 w-4 text-orange-500" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <Sunset className="h-5 w-5 text-orange-600" />
+              </div>
               <div>
-                <p className="text-xs text-gray-600">{t.sunset}</p>
-                <p className="font-medium">{weather.sunset}</p>
+                <p className="text-xs text-gray-600 font-medium">{t.sunset}</p>
+                <p className="font-bold text-gray-900">{weather.sunset}</p>
               </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Hourly Forecast */}
+      <Card className="bg-white shadow-xl border-0">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-gray-800">{t.hourlyForecast}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <div className="flex gap-4 pb-4">
+              {weather.hourly.slice(0, 8).map((hour, index) => (
+                <div 
+                  key={index} 
+                  className="flex-shrink-0 text-center p-4 bg-gradient-to-b from-gray-50 to-white rounded-xl shadow-sm hover:shadow-md transition-shadow min-w-[100px]"
+                >
+                  <p className="text-sm font-medium text-gray-600 mb-2">{hour.time}</p>
+                  {getWeatherIcon(hour.description)}
+                  <p className="text-lg font-bold text-gray-900 mt-2">{hour.temp}°</p>
+                  <p className="text-xs text-gray-500">{hour.humidity}%</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
