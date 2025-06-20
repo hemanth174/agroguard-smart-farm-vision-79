@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -137,7 +136,7 @@ const PlantHealthDatabase = () => {
     setIsAnalyzing(false);
     
     addAlert({
-      type: 'info',
+      type: 'success',
       title: 'Analysis Complete',
       message: `Detected: ${randomDisease.name} with ${Math.floor(Math.random() * 15 + 85)}% confidence`,
       resolved: false
