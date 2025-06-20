@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,7 @@ interface Detection {
 
 const DroneMonitor = () => {
   const { language, addAlert } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [isScanning, setIsScanning] = useState(false);
   const [detections, setDetections] = useState<Detection[]>([]);
   const [liveFeed, setLiveFeed] = useState(true);
@@ -70,6 +69,7 @@ const DroneMonitor = () => {
         if (detection.type === 'fire' || detection.confidence > 85) {
           addAlert({
             type: 'error',
+            title: 'AI Vision Alert',
             message: `AI Vision: ${detection.description}`,
             resolved: false
           });

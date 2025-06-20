@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +22,7 @@ interface WeatherData {
 
 const WeatherDashboard = () => {
   const { language, user, addAlert } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as 'en' | 'hi' | 'te');
   const [weather, setWeather] = useState<WeatherData>({
     temperature: 28,
     humidity: 65,
@@ -59,6 +58,7 @@ const WeatherDashboard = () => {
     if (weather.temperature > 35) {
       addAlert({
         type: 'warning',
+        title: 'High Temperature Alert',
         message: 'High temperature alert. Consider additional watering for crops.',
         resolved: false
       });
@@ -67,6 +67,7 @@ const WeatherDashboard = () => {
     if (weather.windSpeed > 25) {
       addAlert({
         type: 'warning',
+        title: 'High Wind Alert',
         message: 'High wind speeds detected. Secure equipment and check for damage.',
         resolved: false
       });

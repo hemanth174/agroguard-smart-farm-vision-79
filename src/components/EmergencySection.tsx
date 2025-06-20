@@ -111,12 +111,11 @@ const EmergencySection = () => {
   const handleEmergencyCall = () => {
     // In a real app, this would trigger an actual call
     addAlert({
-      type: 'error' as const,
+      type: 'error',
       title: 'Emergency Call Initiated',
       message: 'Emergency services have been contacted.',
       severity: 'high',
-      resolved: false,
-      timestamp: new Date()
+      resolved: false
     });
     alert('Emergency call initiated! (Demo mode)');
   };
@@ -124,12 +123,11 @@ const EmergencySection = () => {
   const handleReportSubmit = () => {
     if (reportForm.description) {
       addAlert({
-        type: 'info' as const,
+        type: 'info',
         title: `Issue Reported: ${reportForm.type}`,
         message: reportForm.description,
         severity: 'medium',
-        resolved: false,
-        timestamp: new Date()
+        resolved: false
       });
       setReportForm({ type: '', description: '', location: '' });
       setSelectedAction(null);

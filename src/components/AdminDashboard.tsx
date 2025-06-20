@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,9 +17,19 @@ const AdminDashboard = () => {
   const handleAdminLogin = () => {
     if (adminPassword === 'admin123') {
       setAdminAuth(true);
-      addAlert({ type: 'info', message: 'Admin access granted', resolved: false });
+      addAlert({ 
+        type: 'info', 
+        title: 'Admin Access',
+        message: 'Admin access granted', 
+        resolved: false 
+      });
     } else {
-      addAlert({ type: 'error', message: 'Invalid admin password', resolved: false });
+      addAlert({ 
+        type: 'error', 
+        title: 'Access Denied',
+        message: 'Invalid admin password', 
+        resolved: false 
+      });
     }
   };
 
@@ -238,7 +247,12 @@ const AlertManager = () => {
 
   const sendManualAlert = () => {
     if (alertMessage.trim()) {
-      addAlert({ type: 'warning', message: alertMessage, resolved: false });
+      addAlert({ 
+        type: 'warning', 
+        title: 'Manual Alert',
+        message: alertMessage, 
+        resolved: false 
+      });
       setAlertMessage('');
     }
   };

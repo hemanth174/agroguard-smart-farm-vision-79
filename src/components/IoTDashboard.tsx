@@ -9,13 +9,14 @@ import { useTranslation } from '@/utils/i18n';
 
 const IoTDashboard = () => {
   const { language, iotData, addAlert } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
 
   // Real-time monitoring and alerting
   useEffect(() => {
     if (iotData.soilMoisture < 25) {
       addAlert({
         type: 'warning',
+        title: 'Low Soil Moisture',
         message: t('lowMoisture'),
         resolved: false
       });
