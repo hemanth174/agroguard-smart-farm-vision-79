@@ -1,10 +1,13 @@
+
 import { useApp } from '@/contexts/AppContext';
 import Navigation from '@/components/Navigation';
 import WeatherService from '@/components/WeatherService';
 import ChatbotEnhanced from '@/components/ChatbotEnhanced';
 import AdminDashboard from '@/components/AdminDashboard';
 import EmergencySection from '@/components/EmergencySection';
-import { useTranslation } from '@/utils/i18n';
+import DroneVideoInput from '@/components/DroneVideoInput';
+import IoTTester from '@/components/IoTTester';
+import { useTranslation, Language } from '@/utils/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +36,7 @@ import { useState } from 'react';
 
 const Index = () => {
   const { user, language, isAdmin } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [showAdmin, setShowAdmin] = useState(false);
 
@@ -176,6 +179,87 @@ const Index = () => {
             ))}
           </div>
         )
+      },
+      'drainage-planning': {
+        title: t('drainagePlanningTitle'),
+        content: <IoTTester />
+      },
+      'smart-drone': {
+        title: t('smartDroneTitle'),
+        content: <DroneVideoInput />
+      },
+      'agri-contracts': {
+        title: t('agriContractsTitle'),
+        content: (
+          <div className="space-y-4">
+            <p className="text-gray-600">Agricultural contract management system</p>
+            <div className="grid gap-4">
+              {[
+                { type: 'Purchase Contract', status: 'Active', value: '₹2,50,000' },
+                { type: 'Supply Agreement', status: 'Pending', value: '₹1,80,000' },
+                { type: 'Service Contract', status: 'Completed', value: '₹95,000' }
+              ].map((contract, index) => (
+                <Card key={index}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-medium">{contract.type}</h4>
+                        <p className="text-sm text-gray-500">Value: {contract.value}</p>
+                      </div>
+                      <Badge variant={contract.status === 'Active' ? 'default' : 'secondary'}>
+                        {contract.status}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )
+      },
+      'plant-health': {
+        title: t('plantHealthTitle'),
+        content: (
+          <div className="space-y-4">
+            <p className="text-gray-600">Monitor and analyze plant health conditions</p>
+            <div className="grid gap-4">
+              {[
+                { field: 'Field A-12', health: 'Excellent', issues: 0, color: 'text-green-600' },
+                { field: 'Field B-8', health: 'Good', issues: 1, color: 'text-blue-600' },
+                { field: 'Field C-5', health: 'Warning', issues: 3, color: 'text-yellow-600' }
+              ].map((field, index) => (
+                <div key={index} className="flex justify-between items-center p-3 border rounded">
+                  <div>
+                    <h4 className="font-medium">{field.field}</h4>
+                    <p className={`text-sm ${field.color}`}>{field.health}</p>
+                  </div>
+                  <Badge variant={field.issues === 0 ? 'default' : 'destructive'}>
+                    {field.issues} Issues
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      },
+      'ai-chatbot': {
+        title: t('aiChatbotTitle'),
+        content: (
+          <div className="space-y-4">
+            <p className="text-gray-600">AI-powered farming assistance and guidance</p>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-600 mb-2">Sample conversation:</p>
+              <div className="space-y-2">
+                <div className="bg-blue-100 p-2 rounded text-sm">
+                  User: "What's the best time to plant tomatoes?"
+                </div>
+                <div className="bg-green-100 p-2 rounded text-sm">
+                  AI: "The best time to plant tomatoes is 2-3 weeks after the last frost date in your area. For your location in Telangana, this would typically be between February and March."
+                </div>
+              </div>
+            </div>
+          </div>
+        )
       }
     };
 
@@ -183,7 +267,7 @@ const Index = () => {
   };
 
   if (showAdmin && isAdmin) {
-    return <AdminDashboard onClose={() => setShowAdmin(false)} />;
+    return <AdminDashboard />;
   }
 
   return (

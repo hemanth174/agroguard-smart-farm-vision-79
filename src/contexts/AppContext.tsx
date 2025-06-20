@@ -18,9 +18,11 @@ interface IoTData {
 interface Alert {
   id: string;
   type: 'warning' | 'error' | 'info';
+  title: string;
   message: string;
   timestamp: Date;
   resolved: boolean;
+  severity?: 'low' | 'medium' | 'high';
 }
 
 interface AppContextType {
@@ -34,6 +36,7 @@ interface AppContextType {
   addAlert: (alert: Omit<Alert, 'id' | 'timestamp'>) => void;
   resolveAlert: (id: string) => void;
   isSignedIn: boolean;
+  isAdmin: boolean;
   signIn: (name: string, mobile: string) => void;
   signOut: () => void;
 }
@@ -114,6 +117,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (iotData.soilMoisture < 30) {
       addAlert({
         type: 'warning',
+        title: 'Low Soil Moisture',
         message: 'Low soil moisture detected. Irrigation recommended.',
         resolved: false
       });
@@ -122,6 +126,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (iotData.waterLevel < 20) {
       addAlert({
         type: 'error',
+        title: 'Water Level Critical',
         message: 'Water tank level critically low.',
         resolved: false
       });
@@ -190,6 +195,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       addAlert,
       resolveAlert,
       isSignedIn: !!user,
+      isAdmin: user?.name === 'admin', // Simple admin check
       signIn,
       signOut
     }}>

@@ -1,3 +1,4 @@
+
 export type Language = 'en' | 'hi' | 'te';
 
 interface Translations {
@@ -116,6 +117,7 @@ const translations: Translations = {
     backToServices: "Back to Services",
     farmingServices: "Farming Services",
     featureComingSoon: "This feature is coming soon!",
+    comingSoon: "Coming Soon",
     
     // Shopping items
     seeds: "Seeds",
@@ -132,7 +134,12 @@ const translations: Translations = {
     rice: "Rice",
     wheat: "Wheat",
     cotton: "Cotton",
-    sugarcane: "Sugarcane"
+    sugarcane: "Sugarcane",
+
+    // Admin
+    adminPanel: "Admin Panel",
+    manageSystem: "Manage System",
+    openDashboard: "Open Dashboard"
   },
   hi: {
     // Navigation
@@ -243,6 +250,12 @@ const translations: Translations = {
     backToServices: "सेवाओं पर वापस जाएं",
     farmingServices: "खेती सेवाएं",
     featureComingSoon: "यह सुविधा जल्द ही आ रही है!",
+    comingSoon: "जल्द आ रहा है",
+
+    // Admin
+    adminPanel: "एडमिन पैनल",
+    manageSystem: "सिस्टम प्रबंधित करें",
+    openDashboard: "डैशबोर्ड खोलें"
   },
   te: {
     // Navigation
@@ -353,6 +366,12 @@ const translations: Translations = {
     backToServices: "సేవలకు తిరిగి వెళ్ళు",
     farmingServices: "వ్యవసాయ సేవలు",
     featureComingSoon: "ఈ ఫీచర్ త్వరలో వస్తుంది!",
+    comingSoon: "త్వరలో వస్తుంది",
+
+    // Admin
+    adminPanel: "అడ్మిన్ ప్యానెల్",
+    manageSystem: "సిస్టమ్ నిర్వహించండి",
+    openDashboard: "డాష్‌బోర్డ్ తెరవండి"
   }
 };
 
