@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'hi' | 'te';
 
 interface Translations {
@@ -25,6 +24,12 @@ const translations: Translations = {
     language: "Language",
     notifications: "Notifications",
     noNewNotifications: "No new notifications",
+    emergency: "Emergency",
+    signin: "Sign In to Your Account",
+    name: "Name",
+    mobile: "Mobile Number",
+    loading: "Loading...",
+    submit: "Submit",
 
     // Main content
     quickStats: "Quick Stats",
@@ -46,6 +51,12 @@ const translations: Translations = {
     poor: "Poor",
     excellent: "Excellent",
     fair: "Fair",
+    moisture: "Soil Moisture",
+    tank: "Water Tank",
+    optimal: "Optimal",
+    normal: "Normal",
+    full: "Full",
+    sensorsOnline: "sensors online",
 
     // Emergency actions
     emergencyCall: "Emergency Call",
@@ -78,8 +89,23 @@ const translations: Translations = {
     coverage: "Coverage",
     issues: "Issues",
     viewLive: "View Live",
+    droneVideoUpload: "Drone Video Upload",
+    uploadDroneVideo: "Upload Drone Video",
+    supportedFormats: "Supported Formats",
+    uploading: "Uploading",
+    selectVideo: "Select Video",
+    processingVideo: "Processing Video",
+    uploadedVideos: "Uploaded Videos",
+    size: "Size",
+    uploaded: "Uploaded",
+    quality: "Quality",
+    detectedIssues: "Detected Issues",
+    noIssuesDetected: "No issues detected",
+    viewDetails: "View Details",
+    noVideosUploaded: "No videos uploaded yet",
 
     // IoT
+    iotTitle: "IoT Sensor Data",
     lowMoisture: "Low Moisture Alert",
     
     // Services
@@ -136,10 +162,55 @@ const translations: Translations = {
     cotton: "Cotton",
     sugarcane: "Sugarcane",
 
+    // Contracts
+    searchContracts: "Search contracts...",
+    allStatus: "All Status",
+    open: "Open",
+    inProgress: "In Progress",
+    completed: "Completed",
+    duration: "Duration",
+    compensation: "Compensation",
+    location: "Location",
+    applicants: "Applicants",
+    provider: "Provider",
+    deadline: "Deadline",
+    requirements: "Requirements",
+    viewProgress: "View Progress",
+    noContractsFound: "No contracts found",
+    tryDifferentSearch: "Try a different search term or filter",
+
+    // Plant Health
+    plantImageAnalysis: "Plant Image Analysis",
+    uploadPlantImage: "Upload a photo of your plant for AI analysis",
+    selectImage: "Select Image",
+    analysisResult: "Analysis Result",
+    detectedIssue: "Detected Issue",
+    recommendedTreatment: "Recommended Treatment",
+    severity: "Severity",
+    analyzingImage: "Analyzing image",
+    uploadImageForAnalysis: "Upload an image for AI analysis",
+    plantHealthDatabase: "Plant Health Database",
+    searchDiseases: "Search diseases, symptoms, treatments...",
+    allCrops: "All Crops",
+    affectedCrops: "Affected Crops",
+    symptoms: "Symptoms",
+    treatment: "Treatment",
+    prevention: "Prevention",
+    noDiseasesFound: "No diseases found",
+
     // Admin
     adminPanel: "Admin Panel",
     manageSystem: "Manage System",
-    openDashboard: "Open Dashboard"
+    openDashboard: "Open Dashboard",
+
+    // IoT Testing
+    iotTesting: "IoT Data Testing",
+    testSensorData: "Test Sensor Data",
+    soilMoistureLevel: "Soil Moisture Level",
+    temperatureReading: "Temperature Reading",
+    waterTankLevel: "Water Tank Level",
+    updateSensorData: "Update Sensor Data",
+    sensorDataUpdated: "Sensor data updated successfully"
   },
   hi: {
     // Navigation
@@ -158,104 +229,65 @@ const translations: Translations = {
     language: "भाषा",
     notifications: "सूचनाएं",
     noNewNotifications: "कोई नई सूचना नहीं",
-
-    // Main content
-    quickStats: "त्वरित आंकड़े",
-    activeFields: "सक्रिय खेत",
-    totalYield: "कुल उत्पादन",
-    weatherAlerts: "मौसम चेतावनी",
-    selectService: "सेवा चुनें",
-    emergencySection: "आपातकाल और सुरक्षा",
-    
-    // Weather
-    weatherAlert: "गंभीर मौसम चेतावनी",
-    temperature: "तापमान",
-    humidity: "आर्द्रता",
-    rainfall: "वर्षा",
-    windSpeed: "हवा की गति",
-    soilMoisture: "मिट्टी की नमी",
-    pestAlert: "कीट चेतावनी",
-    good: "अच्छा",
-    poor: "खराब",
-    excellent: "उत्कृष्ट",
-    fair: "ठीक",
-
-    // Emergency actions
-    emergencyCall: "आपातकालीन कॉल",
-    reportIssue: "समस्या की रिपोर्ट करें",
-    
-    // Services
-    shopping: "खरीदारी",
-    shopDesc: "खेती के उपकरण और सामान खरीदें",
-    browse: "ब्राउज़ करें",
-    videos: "वीडियो गाइड",
-    videoDesc: "खेती की तकनीक सीखें",
-    smartTools: "स्मार्ट टूल्स",
-    toolsDesc: "AI-संचालित खेती के उपकरण",
-    plan: "योजना",
-    contracts: "अनुबंध",
-    contractsDesc: "फील्ड सेवा अनुबंध",
-    apply: "आवेदन करें",
-    back: "वापस",
-    servicesTitle: "खेती सेवाएं",
-
-    // Chatbot
-    chatTitle: "एग्रोगार्ड सहायक",
-    online: "ऑनलाइन",
-    chatPlaceholder: "खेती के बारे में कुछ भी पूछें...",
-
-    // Drone
-    droneTitle: "ड्रोन निगरानी",
-    droneStatus: "ड्रोन स्थिति",
-    lastScan: "अंतिम स्कैन",
-    coverage: "कवरेज",
-    issues: "समस्याएं",
-    viewLive: "लाइव देखें",
-
-    // IoT
-    lowMoisture: "कम नमी चेतावनी",
-    
-    // Services
-    farmingShoppingTitle: "खेती की खरीदारी",
-    farmingShoppingDesc: "खेती के उपकरण और सामान खरीदें",
-    videoGuidesTitle: "वीडियो गाइड",
-    videoGuidesDesc: "खेती की तकनीक सीखें",
-    marketPricesTitle: "बाजार की कीमतें",
-    marketPricesDesc: "वर्तमान बाजार दरें देखें",
-    drainagePlanningTitle: "जल निकासी योजना",
-    drainagePlanningDesc: "अपने खेत की जल निकासी की योजना बनाएं",
-    smartDroneTitle: "स्मार्ट ड्रोन",
-    smartDroneDesc: "AI-संचालित ड्रोन निगरानी",
-    agriContractsTitle: "कृषि अनुबंध",
-    agriContractsDesc: "फील्ड सेवा अनुबंध",
-    plantHealthTitle: "पौधे का स्वास्थ्य",
-    plantHealthDesc: "पौधों की बीमारियों की निगरानी करें",
-    aiChatbotTitle: "AI चैटबॉट",
-    aiChatbotDesc: "खेती में सहायता प्राप्त करें",
-    
-    // Stats
-    totalFarms: "कुल खेत",
-    activeAlerts: "सक्रिय चेतावनी",
-    onlineFarmers: "ऑनलाइन किसान",
-    todayUpdates: "आज के अपडेट",
-    
-    // Quick Actions and Updates
-    quickActions: "त्वरित कार्य",
-    contactSupport: "सहायता से संपर्क करें",
-    recentUpdates: "हाल के अपडेट",
-    marketUpdate: "बाजार अपडेट",
-    newGuide: "नई गाइड उपलब्ध",
-    
-    // Services content
-    backToServices: "सेवाओं पर वापस जाएं",
-    farmingServices: "खेती सेवाएं",
-    featureComingSoon: "यह सुविधा जल्द ही आ रही है!",
-    comingSoon: "जल्द आ रहा है",
-
-    // Admin
-    adminPanel: "एडमिन पैनल",
-    manageSystem: "सिस्टम प्रबंधित करें",
-    openDashboard: "डैशबोर्ड खोलें"
+    emergency: "आपातकाल",
+    signin: "अपने खाते में साइन इन करें",
+    name: "नाम",
+    mobile: "मोबाइल नंबर",
+    loading: "लोड हो रहा है...",
+    submit: "जमा करें",
+    droneVideoUpload: "ड्रोन वीडियो अपलोड",
+    uploadDroneVideo: "ड्रोन वीडियो अपलोड करें",
+    supportedFormats: "समर्थित प्रारूप",
+    uploading: "अपलोड हो रहा है",
+    selectVideo: "वीडियो चुनें",
+    processingVideo: "वीडियो प्रोसेसिंग",
+    uploadedVideos: "अपलोड किए गए वीडियो",
+    size: "आकार",
+    uploaded: "अपलोड किया गया",
+    quality: "गुणवत्ता",
+    detectedIssues: "पहचानी गई समस्याएं",
+    noIssuesDetected: "कोई समस्या नहीं मिली",
+    viewDetails: "विवरण देखें",
+    noVideosUploaded: "अभी तक कोई वीडियो अपलोड नहीं किया गया",
+    searchContracts: "अनुबंध खोजें...",
+    allStatus: "सभी स्थिति",
+    open: "खुला",
+    inProgress: "प्रगति में",
+    completed: "पूर्ण",
+    duration: "अवधि",
+    compensation: "मुआवजा",
+    location: "स्थान",
+    applicants: "आवेदक",
+    provider: "प्रदाता",
+    deadline: "समय सीमा",
+    requirements: "आवश्यकताएं",
+    viewProgress: "प्रगति देखें",
+    noContractsFound: "कोई अनुबंध नहीं मिला",
+    tryDifferentSearch: "अलग खोज शब्द या फिल्टर आज़माएं",
+    plantImageAnalysis: "पौधे की छवि विश्लेषण",
+    uploadPlantImage: "AI विश्लेषण के लिए अपने पौधे की तस्वीर अपलोड करें",
+    selectImage: "छवि चुनें",
+    analysisResult: "विश्लेषण परिणाम",
+    detectedIssue: "पहचानी गई समस्या",
+    recommendedTreatment: "सुझाया गया इलाज",
+    severity: "गंभीरता",
+    analyzingImage: "छवि का विश्लेषण",
+    uploadImageForAnalysis: "AI विश्लेषण के लिए एक छवि अपलोड करें",
+    plantHealthDatabase: "पौधे स्वास्थ्य डेटाबेस",
+    searchDiseases: "बीमारियां, लक्षण, इलाज खोजें...",
+    allCrops: "सभी फसलें",
+    affectedCrops: "प्रभावित फसलें",
+    symptoms: "लक्षण",
+    treatment: "इलाज",
+    prevention: "रोकथाम",
+    noDiseasesFound: "कोई बीमारी नहीं मिली",
+    iotTesting: "IoT डेटा परीक्षण",
+    testSensorData: "सेंसर डेटा परीक्षण",
+    soilMoistureLevel: "मिट्टी की नमी का स्तर",
+    temperatureReading: "तापमान रीडिंग",
+    waterTankLevel: "पानी की टंकी का स्तर",
+    updateSensorData: "सेंसर डेटा अपडेट करें",
+    sensorDataUpdated: "सेंसर डेटा सफलतापूर्वक अपडेट किया गया"
   },
   te: {
     // Navigation
@@ -274,104 +306,65 @@ const translations: Translations = {
     language: "భాష",
     notifications: "నోటిఫికేషన్‌లు",
     noNewNotifications: "కొత్త నోటిఫికేషన్‌లు లేవు",
-
-    // Main content
-    quickStats: "త్వరిత గణాంకాలు",
-    activeFields: "క్రియాశీల పొలాలు",
-    totalYield: "మొత్తం దిగుబడి",
-    weatherAlerts: "వాతావరణ హెచ్చరికలు",
-    selectService: "సేవను ఎంచుకోండి",
-    emergencySection: "అత్యవసర మరియు భద్రత",
-    
-    // Weather
-    weatherAlert: "తీవ్ర వాతావరణ హెచ్చరిక",
-    temperature: "ఉష్ణోగ్రత",
-    humidity: "తేమ",
-    rainfall: "వర్షపాతం",
-    windSpeed: "గాలి వేగం",
-    soilMoisture: "నేల తేమ",
-    pestAlert: "కీటకాల హెచ్చరిక",
-    good: "మంచిది",
-    poor: "చెడ్డది",
-    excellent: "అద్భుతం",
-    fair: "సరియైనది",
-
-    // Emergency actions
-    emergencyCall: "అత్యవసర కాల్",
-    reportIssue: "సమస్యను నివేదించండి",
-    
-    // Services
-    shopping: "షాపింగ్",
-    shopDesc: "వ్యవసాయ పరికరాలు మరియు సామాగ్రిని కొనుగోలు చేయండి",
-    browse: "బ్రౌజ్ చేయండి",
-    videos: "వీడియో గైడ్‌లు",
-    videoDesc: "వ్యవసాయ పద్ధతులను నేర్చుకోండి",
-    smartTools: "స్మార్ట్ టూల్స్",
-    toolsDesc: "AI-ఆధారిత వ్యవసాయ పరికరాలు",
-    plan: "ప్లాన్",
-    contracts: "కాంట్రాక్టులు",
-    contractsDesc: "ఫీల్డ్ సర్వీస్ కాంట్రాక్టులు",
-    apply: "దరఖాస్తు చేయండి",
-    back: "వెనుకకు",
-    servicesTitle: "వ్యవసాయ సేవలు",
-
-    // Chatbot
-    chatTitle: "అగ్రోగార్డ్ అసిస్టెంట్",
-    online: "ఆన్‌లైన్",
-    chatPlaceholder: "వ్యవసాయం గురించి ఏదైనా అడగండి...",
-
-    // Drone
-    droneTitle: "డ్రోన్ పర్యవేక్షణ",
-    droneStatus: "డ్రోన్ స్థితి",
-    lastScan: "చివరి స్కాన్",
-    coverage: "కవరేజ్",
-    issues: "సమస్యలు",
-    viewLive: "లైవ్ చూడండి",
-
-    // IoT
-    lowMoisture: "తక్కువ తేమ హెచ్చరిక",
-    
-    // Services
-    farmingShoppingTitle: "వ్యవసాయ షాపింగ్",
-    farmingShoppingDesc: "వ్యవసాయ పరికరాలు మరియు సామాగ్రిని కొనుగోలు చేయండి",
-    videoGuidesTitle: "వీడియో గైడ్‌లు",
-    videoGuidesDesc: "వ్యవసాయ పద్ధతులను నేర్చుకోండి",
-    marketPricesTitle: "మార్కెట్ ధరలు",
-    marketPricesDesc: "ప్రస్తుత మార్కెట్ రేట్లను చూడండి",
-    drainagePlanningTitle: "డ్రైనేజ్ ప్లానింగ్",
-    drainagePlanningDesc: "మీ పొలం డ్రైనేజ్‌ను ప్లాన్ చేయండి",
-    smartDroneTitle: "స్మార్ట్ డ్రోన్",
-    smartDroneDesc: "AI-ఆధారిత డ్రోన్ పర్యవేక్షణ",
-    agriContractsTitle: "వ్యవసాయ కాంట్రాక్టులు",
-    agriContractsDesc: "ఫీల్డ్ సర్వీస్ కాంట్రాక్టులు",
-    plantHealthTitle: "మొక్కల ఆరోగ్యం",
-    plantHealthDesc: "మొక్కల వ్యాధులను పర్యవేక్షించండి",
-    aiChatbotTitle: "AI చాట్‌బాట్",
-    aiChatbotDesc: "వ్యవసాయంలో సహాయం పొందండి",
-    
-    // Stats
-    totalFarms: "మొత్తం పొలాలు",
-    activeAlerts: "క్రియాశీల హెచ్చరికలు",
-    onlineFarmers: "ఆన్‌లైన్ రైతులు",
-    todayUpdates: "నేటి అప్‌డేట్‌లు",
-    
-    // Quick Actions and Updates
-    quickActions: "త్వరిత చర్యలు",
-    contactSupport: "సపోర్ట్‌ను సంప్రదించండి",
-    recentUpdates: "ఇటీవలి అప్‌డేట్‌లు",
-    marketUpdate: "మార్కెట్ అప్‌డేట్",
-    newGuide: "కొత్త గైడ్ అందుబాటులో ఉంది",
-    
-    // Services content
-    backToServices: "సేవలకు తిరిగి వెళ్ళు",
-    farmingServices: "వ్యవసాయ సేవలు",
-    featureComingSoon: "ఈ ఫీచర్ త్వరలో వస్తుంది!",
-    comingSoon: "త్వరలో వస్తుంది",
-
-    // Admin
-    adminPanel: "అడ్మిన్ ప్యానెల్",
-    manageSystem: "సిస్టమ్ నిర్వహించండి",
-    openDashboard: "డాష్‌బోర్డ్ తెరవండి"
+    emergency: "అత్యవసర",
+    signin: "మీ ఖాతాలోకి సైన్ ఇన్ చేయండి",
+    name: "పేరు",
+    mobile: "మొబైల్ నంబర్",
+    loading: "లోడ్ అవుతోంది...",
+    submit: "సమర్పించండి",
+    droneVideoUpload: "డ్రోన్ వీడియో అప్‌లోడ్",
+    uploadDroneVideo: "డ్రోన్ వీడియో అప్‌లోడ్ చేయండి",
+    supportedFormats: "మద్దతు ఉన్న ఫార్మాట్‌లు",
+    uploading: "అప్‌లోడ్ అవుతోంది",
+    selectVideo: "వీడియో ఎంచుకోండి",
+    processingVideo: "వీడియో ప్రాసెసింగ్",
+    uploadedVideos: "అప్‌లోడ్ చేసిన వీడియోలు",
+    size: "పరిమాణం",
+    uploaded: "అప్‌లోడ్ చేయబడింది",
+    quality: "నాణ్యత",
+    detectedIssues: "గుర్తించిన సమస్యలు",
+    noIssuesDetected: "ఎటువంటి సమస్యలు కనుగొనబడలేదు",
+    viewDetails: "వివరాలు చూడండి",
+    noVideosUploaded: "ఇంకా వీడియోలు అప్‌లోడ్ చేయబడలేదు",
+    searchContracts: "ఒప్పందాలను వెతకండి...",
+    allStatus: "అన్ని స్థితులు",
+    open: "తెరువబడింది",
+    inProgress: "పురోగతిలో",
+    completed: "పూర్తయింది",
+    duration: "వ్యవధి",
+    compensation: "పరిహారం",
+    location: "స్థానం",
+    applicants: "దరఖాస్తుదారులు",
+    provider: "ప్రొవైడర్",
+    deadline: "గడువు",
+    requirements: "అవసరాలు",
+    viewProgress: "పురోగతిని చూడండి",
+    noContractsFound: "ఒప్పందాలు కనుగొనబడలేదు",
+    tryDifferentSearch: "వేరే వెతుకులాట పదం లేదా ఫిల్టర్ ప్రయత్నించండి",
+    plantImageAnalysis: "మొక్క చిత్రం విశ్లేషణ",
+    uploadPlantImage: "AI విశ్లేషణ కోసం మీ మొక్క యొక్క ఫోటోను అప్‌లోడ్ చేయండి",
+    selectImage: "చిత్రాన్ని ఎంచుకోండి",
+    analysisResult: "విశ్లేషణ ఫలితం",
+    detectedIssue: "గుర్తించిన సమస్య",
+    recommendedTreatment: "సిఫార్సు చేసిన చికిత్స",
+    severity: "తీవ్రత",
+    analyzingImage: "చిత్రాన్ని విశ్లేషించడం",
+    uploadImageForAnalysis: "AI విశ్లేషణ కోసం చిత్రాన్ని అప్‌లోడ్ చేయండి",
+    plantHealthDatabase: "మొక్కల ఆరోగ్య డేటాబేస్",
+    searchDiseases: "వ్యాధులు, లక్షణాలు, చికిత్సలను వెతకండి...",
+    allCrops: "అన్ని పంటలు",
+    affectedCrops: "ప్రభావిత పంటలు",
+    symptoms: "లక్షణాలు",
+    treatment: "చికిత్స",
+    prevention: "నివారణ",
+    noDiseasesFound: "వ్యాధులు కనుగొనబడలేదు",
+    iotTesting: "IoT డేటా పరీక్ష",
+    testSensorData: "సెన్సార్ డేటా పరీక్ష",
+    soilMoistureLevel: "మట్టి తేమ స్థాయి",
+    temperatureReading: "ఉష్ణోగ్రత రీడింగ్",
+    waterTankLevel: "నీటి ట్యాంక్ స్థాయి",
+    updateSensorData: "సెన్సార్ డేటా అప్‌డేట్ చేయండి",
+    sensorDataUpdated: "సెన్సార్ డేటా విజయవంతంగా అప్‌డేట్ చేయబడింది"
   }
 };
 

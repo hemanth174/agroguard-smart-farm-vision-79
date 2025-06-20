@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, User, Globe, WifiOff, Menu, X, Settings, HelpCircle } from 'lucide-react';
+import { Bell, User, Globe, WifiOff, Menu, X, Settings, HelpCircle, Phone } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
 import { useState } from 'react';
@@ -16,6 +17,7 @@ const Navigation = () => {
   const { language, setLanguage, user, signOut, alerts, isOnline } = useApp();
   const { t } = useTranslation(language as Language);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('dashboard');
 
   const languages = {
     en: { name: 'English', flag: '🇺🇸' },
@@ -26,11 +28,20 @@ const Navigation = () => {
   const activeAlerts = alerts.filter(alert => !alert.resolved);
 
   const navItems = [
-    { label: t('dashboard'), href: '#dashboard' },
-    { label: t('services'), href: '#services' },
-    { label: t('market'), href: '#market' },
-    { label: t('support'), href: '#support' }
+    { label: t('dashboard'), href: '#dashboard', id: 'dashboard' },
+    { label: t('services'), href: '#services', id: 'services' },
+    { label: t('market'), href: '#market', id: 'market' },
+    { label: t('support'), href: '#support', id: 'support' }
   ];
+
+  const handleNavClick = (sectionId: string) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMobileMenuOpen(false);
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
@@ -57,18 +68,31 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-gray-600 hover:text-green-600 transition-colors font-medium"
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`transition-colors font-medium px-3 py-2 rounded-md ${
+                  activeSection === item.id 
+                    ? 'text-green-600 bg-green-50' 
+                    : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
+                }`}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </div>
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-3">
+            {/* Emergency Call Button */}
+            <a 
+              href="tel:6305003695" 
+              className="hidden sm:flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
+            >
+              <Phone className="w-4 h-4" />
+              <span className="hidden lg:inline">{t('emergency')}</span>
+            </a>
+
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -168,15 +192,26 @@ const Navigation = () => {
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="space-y-2">
               {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="block px-3 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                    activeSection === item.id 
+                      ? 'text-green-600 bg-green-50' 
+                      : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
+                  }`}
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
+              
+              {/* Mobile Emergency Button */}
+              <a 
+                href="tel:6305003695" 
+                className="block w-full text-left px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                📞 {t('emergency')}: 6305003695
+              </a>
             </div>
             
             {/* Mobile Language Selector */}
