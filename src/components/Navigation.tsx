@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +21,13 @@ const Navigation = () => {
   const languages = {
     en: { name: 'English', flag: '🇺🇸' },
     hi: { name: 'हिंदी', flag: '🇮🇳' },
-    te: { name: 'తెలుగు', flag: '🇮🇳' }
+    te: { name: 'తెలుగు', flag: '🇮🇳' },
+    zh: { name: '中文', flag: '🇨🇳' },
+    es: { name: 'Español', flag: '🇪🇸' },
+    mr: { name: 'मराठी', flag: '🇮🇳' },
+    gu: { name: 'ગુજરાતી', flag: '🇮🇳' },
+    kn: { name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+    ta: { name: 'தமிழ்', flag: '🇮🇳' }
   };
 
   const activeAlerts = alerts.filter(alert => !alert.resolved);
@@ -102,12 +107,12 @@ const Navigation = () => {
                   <span className="lg:hidden">{languages[language].flag}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-white z-50">
                 {Object.entries(languages).map(([key, lang]) => (
                   <DropdownMenuItem
                     key={key}
                     onClick={() => setLanguage(key as any)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 hover:bg-green-50"
                   >
                     <span>{lang.flag}</span>
                     <span>{lang.name}</span>
@@ -129,7 +134,7 @@ const Navigation = () => {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuContent align="end" className="w-64 bg-white z-50">
                 <div className="p-2 border-b">
                   <p className="font-semibold">{t('notifications')}</p>
                 </div>
@@ -156,7 +161,7 @@ const Navigation = () => {
                   <span className="hidden sm:inline">{user?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-white z-50">
                 <DropdownMenuItem className="flex items-center gap-2">
                   <User className="w-4 h-4" />
                   {t('profile')}
@@ -189,7 +194,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
+          <div className="md:hidden border-t border-gray-200 py-4 bg-white">
             <div className="space-y-2">
               {navItems.map((item) => (
                 <button
@@ -217,17 +222,17 @@ const Navigation = () => {
             {/* Mobile Language Selector */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <p className="text-sm font-medium text-gray-500 mb-2">{t('language')}</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {Object.entries(languages).map(([key, lang]) => (
                   <Button
                     key={key}
                     variant={language === key ? "default" : "outline"}
                     size="sm"
                     onClick={() => setLanguage(key as any)}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 text-xs"
                   >
                     <span>{lang.flag}</span>
-                    <span className="text-xs">{lang.name}</span>
+                    <span className="truncate">{lang.name}</span>
                   </Button>
                 ))}
               </div>
