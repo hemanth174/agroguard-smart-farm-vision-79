@@ -7,12 +7,14 @@ import SignIn from '@/components/SignIn';
 import IoTDashboard from '@/components/IoTDashboard';
 import DroneMonitor from '@/components/DroneMonitor';
 import WeatherDashboard from '@/components/WeatherDashboard';
+import WeatherService from '@/components/WeatherService';
 import FarmingServicesCard from '@/components/FarmingServicesCard';
-import ChatbotAdvanced from '@/components/ChatbotAdvanced';
+import ChatbotEnhanced from '@/components/ChatbotEnhanced';
 import EmergencySection from '@/components/EmergencySection';
 import DronePatrolCard from '@/components/DronePatrolCard';
 import MarketPricesCard from '@/components/MarketPricesCard';
 import PlantHealthCard from '@/components/PlantHealthCard';
+import AdminDashboard from '@/components/AdminDashboard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +41,11 @@ const Index = () => {
     return <SignIn />;
   }
 
+  // Check if user is admin
+  if (user?.name === 'admin' || activeSection === 'admin') {
+    return <AdminDashboard />;
+  }
+
   const menuItems = [
     { id: 'dashboard', icon: Home, label: t('home') },
     { id: 'emergency', icon: Shield, label: language === 'en' ? 'Emergency' : language === 'hi' ? 'आपातकाल' : 'అత్యవసరం' },
@@ -49,7 +56,8 @@ const Index = () => {
     { id: 'drone-tech', icon: Plane, label: language === 'en' ? 'Drone Tech' : language === 'hi' ? 'ड्रोन तकनीक' : 'డ్రోన్ టెక్' },
     { id: 'contracts', icon: FileText, label: t('contracts') },
     { id: 'plant-health', icon: Leaf, label: language === 'en' ? 'Plant Health' : language === 'hi' ? 'पौधे का स्वास्थ्य' : 'మొక్క ఆరోగ్యం' },
-    { id: 'chatbot', icon: MessageCircle, label: language === 'en' ? 'AI Chat' : language === 'hi' ? 'AI चैट' : 'AI చాట్' }
+    { id: 'weather', icon: Zap, label: language === 'en' ? 'Live Weather' : language === 'hi' ? 'मौसम' : 'వాతావరణం' },
+    { id: 'admin', icon: Shield, label: 'Admin', adminOnly: true }
   ];
 
   const renderShoppingSection = () => (
@@ -273,7 +281,7 @@ const Index = () => {
                 <DroneMonitor />
               </div>
               <div className="space-y-6">
-                <WeatherDashboard />
+                <WeatherService />
                 <DronePatrolCard language={language} />
                 <MarketPricesCard language={language} />
               </div>
@@ -296,17 +304,10 @@ const Index = () => {
         return renderContractsSection();
       case 'plant-health':
         return <PlantHealthCard language={language} />;
-      case 'chatbot':
-        return (
-          <div className="flex justify-center items-center h-96">
-            <Card className="p-8 text-center">
-              <MessageCircle className="h-16 w-16 mx-auto mb-4 text-green-600" />
-              <h3 className="text-xl font-bold mb-2">AI Chatbot</h3>
-              <p className="text-gray-600 mb-4">Click the chat button in the bottom right to start talking with our AI assistant!</p>
-              <Badge className="bg-green-100 text-green-800">Always Available</Badge>
-            </Card>
-          </div>
-        );
+      case 'weather':
+        return <WeatherService />;
+      case 'admin':
+        return <AdminDashboard />;
       default:
         return renderCurrentSection();
     }
@@ -320,7 +321,9 @@ const Index = () => {
         {/* Navigation Menu */}
         <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
           <div className="flex flex-wrap gap-2">
-            {menuItems.map((item) => (
+            {menuItems
+              .filter(item => !item.adminOnly || user?.name === 'admin')
+              .map((item) => (
               <Button
                 key={item.id}
                 variant={activeSection === item.id ? 'default' : 'outline'}
@@ -339,7 +342,7 @@ const Index = () => {
         {renderCurrentSection()}
       </div>
 
-      <ChatbotAdvanced />
+      <ChatbotEnhanced />
     </div>
   );
 };
