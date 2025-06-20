@@ -82,7 +82,7 @@ export const translations = {
     
     // Chatbot
     chatTitle: 'AgroGuard Assistant',
-    chatPlaceholder: 'Ask about farming, weather, prices...',
+    chatPlaceholder: 'Ask me anything about farming, weather, prices, diseases...',
     send: 'Send',
     voice: 'Voice',
     online: 'Online',
@@ -190,7 +190,7 @@ export const translations = {
     
     // Chatbot
     chatTitle: 'एग्रोगार्ड सहायक',
-    chatPlaceholder: 'कृषि, मौसम, मूल्य के बारे में पूछें...',
+    chatPlaceholder: 'कृषि, मौसम, मूल्य, बीमारियों के बारे में कुछ भी पूछें...',
     send: 'भेजें',
     voice: 'आवाज़',
     online: 'ऑनलाइन',
@@ -298,7 +298,7 @@ export const translations = {
     
     // Chatbot
     chatTitle: 'అగ్రోగార్డ్ సహాయకుడు',
-    chatPlaceholder: 'వ్యవసాయం, వాతావరణం, ధరల గురించి అడగండి...',
+    chatPlaceholder: 'వ్యవసాయం, వాతావరణం, ధరలు, వ్యాధుల గురించి ఏదైనా అడగండి...',
     send: 'పంపండి',
     voice: 'వాయిస్',
     online: 'ఆన్‌లైన్',
