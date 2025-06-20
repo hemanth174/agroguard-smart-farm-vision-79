@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Plus, Minus, Search, Filter, CreditCard, Trash2, MapPin, Smartphone, DollarSign } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Search, Filter, CreditCard, Trash2, MapPin, Smartphone, DollarSign, Camera, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   id: string;
@@ -36,8 +36,10 @@ const ShoppingService = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set());
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
   const { user } = useApp();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const categories = ['all', 'Seeds', 'Fertilizers', 'Tools', 'Testing', 'IoT', 'Materials', 'Irrigation'];
 
@@ -83,6 +85,38 @@ const ShoppingService = () => {
   const saveCartToStorage = (items: CartItem[]) => {
     if (user?.name) {
       localStorage.setItem(`cart-${user.name}`, JSON.stringify(items));
+    }
+  };
+
+  const handleImageUpload = async (productId: string, file: File) => {
+    setUploadingImage(productId);
+    
+    try {
+      // Create a URL for the uploaded file
+      const imageUrl = URL.createObjectURL(file);
+      
+      // Update the product with the new image
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product.id === productId 
+            ? { ...product, image_url: imageUrl }
+            : product
+        )
+      );
+
+      toast({
+        title: 'Image uploaded',
+        description: 'Product image has been updated successfully',
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Upload failed',
+        description: 'Failed to upload image',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingImage(null);
     }
   };
 
@@ -169,57 +203,26 @@ const ShoppingService = () => {
   const processPayment = async (paymentMethod: string) => {
     if (!user?.name || cartItems.length === 0) return;
 
-    setPaymentLoading(true);
     const totalAmount = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simulate payment success
-      const isSuccess = Math.random() > 0.1; // 90% success rate
-
-      if (isSuccess) {
-        let paymentMessage = '';
-        switch (paymentMethod) {
-          case 'bank':
-            paymentMessage = `Bank transfer successful! Amount: ₹${totalAmount.toFixed(2)}`;
-            break;
-          case 'upi':
-            paymentMessage = `UPI payment successful! Amount: ₹${totalAmount.toFixed(2)}`;
-            break;
-          case 'cash':
-            paymentMessage = `Cash payment arranged at VillageEye center. Amount: ₹${totalAmount.toFixed(2)}`;
-            break;
-          default:
-            paymentMessage = `Payment successful! Amount: ₹${totalAmount.toFixed(2)}`;
-        }
-
-        toast({
-          title: 'Payment Successful!',
-          description: paymentMessage,
-        });
-
-        // Clear cart after successful payment
-        clearCart();
-        setShowCart(false);
-        setShowPaymentOptions(false);
-      } else {
-        toast({
-          title: 'Payment Failed',
-          description: 'Payment could not be processed. Please try again.',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Payment Error',
-        description: 'An error occurred during payment processing.',
-        variant: 'destructive',
-      });
-    } finally {
-      setPaymentLoading(false);
-    }
+    
+    // Store payment data for the new page
+    const paymentData = {
+      method: paymentMethod,
+      amount: totalAmount,
+      items: cartItems,
+      user: user
+    };
+    
+    localStorage.setItem('paymentData', JSON.stringify(paymentData));
+    
+    // Navigate to payment page in new tab
+    const paymentUrl = `/payment?method=${paymentMethod}`;
+    window.open(paymentUrl, '_blank');
+    
+    // Clear cart and close modals
+    clearCart();
+    setShowCart(false);
+    setShowPaymentOptions(false);
   };
 
   const filteredProducts = products.filter(product => {
@@ -233,7 +236,7 @@ const ShoppingService = () => {
   const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   if (loading) {
-    return <div className="text-center py-8">Loading products...</div>;
+    return <div className="text-center py-8 animate-pulse">Loading products...</div>;
   }
 
   return (
@@ -243,11 +246,11 @@ const ShoppingService = () => {
         <h2 className="text-xl md:text-2xl font-bold">🛒 Shopping</h2>
         <Button
           onClick={() => setShowCart(!showCart)}
-          className="relative transition-all duration-300 hover:scale-105"
-          variant="outline"
+          className={`relative transition-all duration-300 hover:scale-105 ${cartItemsCount > 0 ? 'bg-green-600 hover:bg-green-700 animate-pulse' : ''}`}
+          variant={cartItemsCount > 0 ? "default" : "outline"}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
-          Cart ({cartItemsCount})
+          {cartItemsCount > 0 ? `View Cart (${cartItemsCount})` : `Cart (${cartItemsCount})`}
           {cartItemsCount > 0 && (
             <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 text-xs animate-bounce">
               {cartItemsCount}
@@ -258,7 +261,7 @@ const ShoppingService = () => {
 
       {/* Cart Modal */}
       {showCart && (
-        <Card className="border-2 border-green-200 animate-fade-in">
+        <Card className="border-2 border-green-200 animate-fade-in shadow-lg">
           <CardHeader>
             <CardTitle className="flex justify-between items-center text-lg">
               Shopping Cart
@@ -404,11 +407,35 @@ const ShoppingService = () => {
         {filteredProducts.map((product) => (
           <Card key={product.id} className={`hover:shadow-lg transition-all duration-300 hover:scale-105 ${animatingItems.has(product.id) ? 'animate-pulse border-green-500' : ''}`}>
             <CardContent className="p-3 md:p-4">
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="w-full h-32 md:h-48 object-cover rounded-lg mb-3 md:mb-4"
-              />
+              <div className="relative mb-3 md:mb-4">
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-full h-32 md:h-48 object-cover rounded-lg"
+                />
+                <div className="absolute top-2 right-2">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleImageUpload(product.id, file);
+                        }
+                      }}
+                    />
+                    <div className="bg-white/80 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110">
+                      {uploadingImage === product.id ? (
+                        <Upload className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Camera className="h-4 w-4" />
+                      )}
+                    </div>
+                  </label>
+                </div>
+              </div>
               <Badge className="mb-2 text-xs">{product.category}</Badge>
               <h3 className="font-semibold text-sm md:text-lg mb-2 line-clamp-2">{product.name}</h3>
               <p className="text-gray-600 text-xs md:text-sm mb-3 line-clamp-2">{product.description}</p>
