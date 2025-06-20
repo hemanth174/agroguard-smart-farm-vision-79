@@ -1,7 +1,6 @@
+
 import React from 'react';
-import Head from 'next/head';
 import { useApp } from '@/contexts/AppContext';
-import { ModeToggle } from '@/components/ui/mode-toggle';
 import { useTranslation, Language } from '@/utils/i18n';
 import {
   DropdownMenu,
@@ -14,7 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import ChatbotEnhanced from '@/components/ChatbotEnhanced';
 import VoiceChatbot from '@/components/VoiceChatbot';
 
@@ -22,32 +21,25 @@ const Index = () => {
   const { user, setUser } = useApp();
   const { language } = useApp();
   const { t } = useTranslation(language as Language);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    router.push('/login');
+    navigate('/login');
   };
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Head>
-        <title>VillageEye</title>
-        <meta name="description" content="VillageEye - Your farming companion" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <header className="px-4 py-3 bg-white dark:bg-gray-800 border-b dark:border-gray-700 flex items-center justify-between">
         <div className="font-bold text-lg">{t('title')}</div>
         <div className="flex items-center space-x-4">
-          <ModeToggle />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.image || "/icons/avatar.png"} alt={user.name || "Avatar"} />
+                    <AvatarImage src="/icons/avatar.png" alt={user.name || "Avatar"} />
                     <AvatarFallback>{user.name ? user.name[0] : 'U'}</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -55,7 +47,7 @@ const Index = () => {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
+                <DropdownMenuItem disabled>{user.name}</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -64,7 +56,7 @@ const Index = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => router.push('/login')}>Login</Button>
+            <Button onClick={() => navigate('/login')}>Login</Button>
           )}
         </div>
       </header>
