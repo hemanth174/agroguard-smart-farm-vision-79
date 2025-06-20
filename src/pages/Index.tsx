@@ -1,4 +1,3 @@
-
 import { useApp } from '@/contexts/AppContext';
 import Navigation from '@/components/Navigation';
 import WeatherService from '@/components/WeatherService';
@@ -20,7 +19,7 @@ import {
   FileText,
   Camera,
   AlertTriangle,
-  Drone,
+  Plane,
   MapPin,
   Phone,
   MessageSquare,
@@ -75,7 +74,7 @@ const Index = () => {
       id: 'smart-drone',
       title: t('smartDroneTitle'),
       description: t('smartDroneDesc'),
-      icon: Drone,
+      icon: Plane,
       color: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
       category: 'technology'
     },

@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'hi' | 'te';
 
 interface Translations {
@@ -57,7 +56,6 @@ const translations: Translations = {
     browse: "Browse",
     videos: "Video Guides",
     videoDesc: "Learn farming techniques",
-    watch: "Watch",
     smartTools: "Smart Tools",
     toolsDesc: "AI-powered farming tools",
     plan: "Plan",
@@ -81,7 +79,60 @@ const translations: Translations = {
     viewLive: "View Live",
 
     // IoT
-    lowMoisture: "Low Moisture Alert"
+    lowMoisture: "Low Moisture Alert",
+    
+    // Services
+    farmingShoppingTitle: "Farming Shopping",
+    farmingShoppingDesc: "Buy farming tools and supplies",
+    videoGuidesTitle: "Video Guides",
+    videoGuidesDesc: "Learn farming techniques",
+    marketPricesTitle: "Market Prices",
+    marketPricesDesc: "Check current market rates",
+    drainagePlanningTitle: "Drainage Planning",
+    drainagePlanningDesc: "Plan your field drainage",
+    smartDroneTitle: "Smart Drone",
+    smartDroneDesc: "AI-powered drone monitoring",
+    agriContractsTitle: "Agri Contracts",
+    agriContractsDesc: "Field service contracts",
+    plantHealthTitle: "Plant Health",
+    plantHealthDesc: "Monitor plant diseases",
+    aiChatbotTitle: "AI Chatbot",
+    aiChatbotDesc: "Get farming assistance",
+    
+    // Stats
+    totalFarms: "Total Farms",
+    activeAlerts: "Active Alerts",
+    onlineFarmers: "Online Farmers",
+    todayUpdates: "Today's Updates",
+    
+    // Quick Actions and Updates
+    quickActions: "Quick Actions",
+    contactSupport: "Contact Support",
+    recentUpdates: "Recent Updates",
+    marketUpdate: "Market Update",
+    newGuide: "New Guide Available",
+    
+    // Services content
+    backToServices: "Back to Services",
+    farmingServices: "Farming Services",
+    featureComingSoon: "This feature is coming soon!",
+    
+    // Shopping items
+    seeds: "Seeds",
+    fertilizer: "Fertilizer",
+    tools: "Tools",
+    pesticides: "Pesticides",
+    addToCart: "Add to Cart",
+    
+    // Video content
+    organicFarmingGuide: "Organic Farming Guide",
+    organicFarmingDesc: "Learn sustainable farming practices",
+    
+    // Market prices
+    rice: "Rice",
+    wheat: "Wheat",
+    cotton: "Cotton",
+    sugarcane: "Sugarcane"
   },
   hi: {
     // Navigation
@@ -132,7 +183,6 @@ const translations: Translations = {
     browse: "ब्राउज़ करें",
     videos: "वीडियो गाइड",
     videoDesc: "खेती की तकनीक सीखें",
-    watch: "देखें",
     smartTools: "स्मार्ट टूल्स",
     toolsDesc: "AI-संचालित खेती के उपकरण",
     plan: "योजना",
@@ -156,7 +206,43 @@ const translations: Translations = {
     viewLive: "लाइव देखें",
 
     // IoT
-    lowMoisture: "कम नमी चेतावनी"
+    lowMoisture: "कम नमी चेतावनी",
+    
+    // Services
+    farmingShoppingTitle: "खेती की खरीदारी",
+    farmingShoppingDesc: "खेती के उपकरण और सामान खरीदें",
+    videoGuidesTitle: "वीडियो गाइड",
+    videoGuidesDesc: "खेती की तकनीक सीखें",
+    marketPricesTitle: "बाजार की कीमतें",
+    marketPricesDesc: "वर्तमान बाजार दरें देखें",
+    drainagePlanningTitle: "जल निकासी योजना",
+    drainagePlanningDesc: "अपने खेत की जल निकासी की योजना बनाएं",
+    smartDroneTitle: "स्मार्ट ड्रोन",
+    smartDroneDesc: "AI-संचालित ड्रोन निगरानी",
+    agriContractsTitle: "कृषि अनुबंध",
+    agriContractsDesc: "फील्ड सेवा अनुबंध",
+    plantHealthTitle: "पौधे का स्वास्थ्य",
+    plantHealthDesc: "पौधों की बीमारियों की निगरानी करें",
+    aiChatbotTitle: "AI चैटबॉट",
+    aiChatbotDesc: "खेती में सहायता प्राप्त करें",
+    
+    // Stats
+    totalFarms: "कुल खेत",
+    activeAlerts: "सक्रिय चेतावनी",
+    onlineFarmers: "ऑनलाइन किसान",
+    todayUpdates: "आज के अपडेट",
+    
+    // Quick Actions and Updates
+    quickActions: "त्वरित कार्य",
+    contactSupport: "सहायता से संपर्क करें",
+    recentUpdates: "हाल के अपडेट",
+    marketUpdate: "बाजार अपडेट",
+    newGuide: "नई गाइड उपलब्ध",
+    
+    // Services content
+    backToServices: "सेवाओं पर वापस जाएं",
+    farmingServices: "खेती सेवाएं",
+    featureComingSoon: "यह सुविधा जल्द ही आ रही है!",
   },
   te: {
     // Navigation
@@ -207,7 +293,6 @@ const translations: Translations = {
     browse: "బ్రౌజ్ చేయండి",
     videos: "వీడియో గైడ్‌లు",
     videoDesc: "వ్యవసాయ పద్ధతులను నేర్చుకోండి",
-    watch: "చూడండి",
     smartTools: "స్మార్ట్ టూల్స్",
     toolsDesc: "AI-ఆధారిత వ్యవసాయ పరికరాలు",
     plan: "ప్లాన్",
@@ -231,7 +316,43 @@ const translations: Translations = {
     viewLive: "లైవ్ చూడండి",
 
     // IoT
-    lowMoisture: "తక్కువ తేమ హెచ్చరిక"
+    lowMoisture: "తక్కువ తేమ హెచ్చరిక",
+    
+    // Services
+    farmingShoppingTitle: "వ్యవసాయ షాపింగ్",
+    farmingShoppingDesc: "వ్యవసాయ పరికరాలు మరియు సామాగ్రిని కొనుగోలు చేయండి",
+    videoGuidesTitle: "వీడియో గైడ్‌లు",
+    videoGuidesDesc: "వ్యవసాయ పద్ధతులను నేర్చుకోండి",
+    marketPricesTitle: "మార్కెట్ ధరలు",
+    marketPricesDesc: "ప్రస్తుత మార్కెట్ రేట్లను చూడండి",
+    drainagePlanningTitle: "డ్రైనేజ్ ప్లానింగ్",
+    drainagePlanningDesc: "మీ పొలం డ్రైనేజ్‌ను ప్లాన్ చేయండి",
+    smartDroneTitle: "స్మార్ట్ డ్రోన్",
+    smartDroneDesc: "AI-ఆధారిత డ్రోన్ పర్యవేక్షణ",
+    agriContractsTitle: "వ్యవసాయ కాంట్రాక్టులు",
+    agriContractsDesc: "ఫీల్డ్ సర్వీస్ కాంట్రాక్టులు",
+    plantHealthTitle: "మొక్కల ఆరోగ్యం",
+    plantHealthDesc: "మొక్కల వ్యాధులను పర్యవేక్షించండి",
+    aiChatbotTitle: "AI చాట్‌బాట్",
+    aiChatbotDesc: "వ్యవసాయంలో సహాయం పొందండి",
+    
+    // Stats
+    totalFarms: "మొత్తం పొలాలు",
+    activeAlerts: "క్రియాశీల హెచ్చరికలు",
+    onlineFarmers: "ఆన్‌లైన్ రైతులు",
+    todayUpdates: "నేటి అప్‌డేట్‌లు",
+    
+    // Quick Actions and Updates
+    quickActions: "త్వరిత చర్యలు",
+    contactSupport: "సపోర్ట్‌ను సంప్రదించండి",
+    recentUpdates: "ఇటీవలి అప్‌డేట్‌లు",
+    marketUpdate: "మార్కెట్ అప్‌డేట్",
+    newGuide: "కొత్త గైడ్ అందుబాటులో ఉంది",
+    
+    // Services content
+    backToServices: "సేవలకు తిరిగి వెళ్ళు",
+    farmingServices: "వ్యవసాయ సేవలు",
+    featureComingSoon: "ఈ ఫీచర్ త్వరలో వస్తుంది!",
   }
 };
 

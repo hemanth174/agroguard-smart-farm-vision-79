@@ -18,11 +18,11 @@ import {
   Send
 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 const EmergencySection = () => {
   const { language, addAlert } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
   const [reportForm, setReportForm] = useState({ type: '', description: '', location: '' });
   const [isListening, setIsListening] = useState(false);
@@ -111,7 +111,6 @@ const EmergencySection = () => {
   const handleEmergencyCall = () => {
     // In a real app, this would trigger an actual call
     addAlert({
-      id: Date.now(),
       type: 'error' as const,
       title: 'Emergency Call Initiated',
       message: 'Emergency services have been contacted.',
@@ -125,7 +124,6 @@ const EmergencySection = () => {
   const handleReportSubmit = () => {
     if (reportForm.description) {
       addAlert({
-        id: Date.now(),
         type: 'info' as const,
         title: `Issue Reported: ${reportForm.type}`,
         message: reportForm.description,
