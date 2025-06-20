@@ -1,347 +1,370 @@
 
-import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
 import Navigation from '@/components/Navigation';
-import SignIn from '@/components/SignIn';
-import IoTDashboard from '@/components/IoTDashboard';
-import DroneMonitor from '@/components/DroneMonitor';
-import WeatherDashboard from '@/components/WeatherDashboard';
 import WeatherService from '@/components/WeatherService';
-import FarmingServicesCard from '@/components/FarmingServicesCard';
 import ChatbotEnhanced from '@/components/ChatbotEnhanced';
-import EmergencySection from '@/components/EmergencySection';
-import DronePatrolCard from '@/components/DronePatrolCard';
-import MarketPricesCard from '@/components/MarketPricesCard';
-import PlantHealthCard from '@/components/PlantHealthCard';
 import AdminDashboard from '@/components/AdminDashboard';
-import { Button } from '@/components/ui/button';
+import EmergencySection from '@/components/EmergencySection';
+import { useTranslation } from '@/utils/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Home, 
-  Shield, 
+  Tractor, 
   ShoppingCart, 
-  Video, 
+  PlayCircle, 
   TrendingUp, 
-  Droplets,
-  Plane,
-  FileText,
+  Droplets, 
+  Bot,
   Leaf,
-  MessageCircle,
-  Zap
+  FileText,
+  Camera,
+  AlertTriangle,
+  Drone,
+  MapPin,
+  Phone,
+  MessageSquare,
+  Settings,
+  Users,
+  BarChart3,
+  Calendar,
+  Bell
 } from 'lucide-react';
+import { useState } from 'react';
 
 const Index = () => {
-  const { isSignedIn, user, language } = useApp();
+  const { user, language, isAdmin } = useApp();
   const { t } = useTranslation(language);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [showAdmin, setShowAdmin] = useState(false);
 
-  if (!isSignedIn) {
-    return <SignIn />;
-  }
-
-  // Check if user is admin
-  if (user?.name === 'admin' || activeSection === 'admin') {
-    return <AdminDashboard />;
-  }
-
-  const menuItems = [
-    { id: 'dashboard', icon: Home, label: t('home') },
-    { id: 'emergency', icon: Shield, label: language === 'en' ? 'Emergency' : language === 'hi' ? 'आपातकाल' : 'అత్యవసరం' },
-    { id: 'shopping', icon: ShoppingCart, label: t('shopping') },
-    { id: 'videos', icon: Video, label: t('videos') },
-    { id: 'market', icon: TrendingUp, label: language === 'en' ? 'Market' : language === 'hi' ? 'बाज़ार' : 'మార్కెట్' },
-    { id: 'drainage', icon: Droplets, label: language === 'en' ? 'Drainage' : language === 'hi' ? 'जल निकासी' : 'డ్రైనేజీ' },
-    { id: 'drone-tech', icon: Plane, label: language === 'en' ? 'Drone Tech' : language === 'hi' ? 'ड्रोन तकनीक' : 'డ్రోన్ టెక్' },
-    { id: 'contracts', icon: FileText, label: t('contracts') },
-    { id: 'plant-health', icon: Leaf, label: language === 'en' ? 'Plant Health' : language === 'hi' ? 'पौधे का स्वास्थ्य' : 'మొక్క ఆరోగ్యం' },
-    { id: 'weather', icon: Zap, label: language === 'en' ? 'Live Weather' : language === 'hi' ? 'मौसम' : 'వాతావరణం' },
-    { id: 'admin', icon: Shield, label: 'Admin', adminOnly: true }
+  const services = [
+    {
+      id: 'farming-shopping',
+      title: t('farmingShoppingTitle'),
+      description: t('farmingShoppingDesc'),
+      icon: ShoppingCart,
+      color: 'bg-green-100 text-green-700 hover:bg-green-200',
+      category: 'farming'
+    },
+    {
+      id: 'video-guides',
+      title: t('videoGuidesTitle'),
+      description: t('videoGuidesDesc'),
+      icon: PlayCircle,
+      color: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+      category: 'learning'
+    },
+    {
+      id: 'market-prices',
+      title: t('marketPricesTitle'),
+      description: t('marketPricesDesc'),
+      icon: TrendingUp,
+      color: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+      category: 'market'
+    },
+    {
+      id: 'drainage-planning',
+      title: t('drainagePlanningTitle'),
+      description: t('drainagePlanningDesc'),
+      icon: Droplets,
+      color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200',
+      category: 'planning'
+    },
+    {
+      id: 'smart-drone',
+      title: t('smartDroneTitle'),
+      description: t('smartDroneDesc'),
+      icon: Drone,
+      color: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
+      category: 'technology'
+    },
+    {
+      id: 'agri-contracts',
+      title: t('agriContractsTitle'),
+      description: t('agriContractsDesc'),
+      icon: FileText,
+      color: 'bg-orange-100 text-orange-700 hover:bg-orange-200',
+      category: 'business'
+    },
+    {
+      id: 'plant-health',
+      title: t('plantHealthTitle'),
+      description: t('plantHealthDesc'),
+      icon: Leaf,
+      color: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200',
+      category: 'health'
+    },
+    {
+      id: 'ai-chatbot',
+      title: t('aiChatbotTitle'),
+      description: t('aiChatbotDesc'),
+      icon: Bot,
+      color: 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200',
+      category: 'ai'
+    }
   ];
 
-  const renderShoppingSection = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('shopping')}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { name: 'Premium Seeds', price: '₹500/kg', category: 'Seeds', inStock: true, image: '🌱' },
-          { name: 'Organic Fertilizer', price: '₹800/bag', category: 'Fertilizers', inStock: true, image: '🌿' },
-          { name: 'Bio Pesticide', price: '₹1,200/L', category: 'Pesticides', inStock: false, image: '🧪' },
-          { name: 'Irrigation Pipes', price: '₹150/meter', category: 'Tools', inStock: true, image: '🔧' },
-          { name: 'Soil pH Tester', price: '₹2,500', category: 'Tools', inStock: true, image: '📊' },
-          { name: 'Plant Growth Hormone', price: '₹600/bottle', category: 'Fertilizers', inStock: true, image: '💉' },
-          { name: 'Garden Tools Set', price: '₹3,200', category: 'Tools', inStock: true, image: '🛠️' },
-          { name: 'Greenhouse Kit', price: '₹15,000/kit', category: 'Infrastructure', inStock: false, image: '🏠' }
-        ].map((product, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-4">
-              <div className="text-4xl text-center mb-3">{product.image}</div>
-              <h3 className="font-medium text-sm mb-1">{product.name}</h3>
-              <p className="text-xs text-gray-500 mb-2">{product.category}</p>
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-green-600">{product.price}</span>
-                <Badge variant={product.inStock ? 'outline' : 'destructive'}>
-                  {product.inStock ? 'In Stock' : 'Out of Stock'}
-                </Badge>
-              </div>
-              <Button 
-                size="sm" 
-                className="w-full" 
-                disabled={!product.inStock}
-                variant={product.inStock ? 'default' : 'outline'}
-              >
-                {product.inStock ? 'Add to Cart' : 'Notify Me'}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
+  const quickStats = [
+    { label: t('totalFarms'), value: '1,247', icon: MapPin, color: 'text-green-600' },
+    { label: t('activeAlerts'), value: '23', icon: Bell, color: 'text-red-600' },
+    { label: t('onlineFarmers'), value: '892', icon: Users, color: 'text-blue-600' },
+    { label: t('todayUpdates'), value: '156', icon: BarChart3, color: 'text-purple-600' }
+  ];
 
-  const renderVideosSection = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('videos')}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[
-          { title: 'Modern Irrigation Techniques', duration: '15:30', language: 'EN/HI/TE', views: '12K' },
-          { title: 'Organic Farming Methods', duration: '12:45', language: 'EN/HI/TE', views: '8.5K' },
-          { title: 'Crop Disease Prevention', duration: '18:20', language: 'EN/HI/TE', views: '15K' },
-          { title: 'Soil Health Management', duration: '14:15', language: 'EN/HI/TE', views: '9.2K' },
-          { title: 'Pest Control Strategies', duration: '16:50', language: 'EN/HI/TE', views: '11K' },
-          { title: 'Harvest Optimization', duration: '13:30', language: 'EN/HI/TE', views: '7.8K' }
-        ].map((video, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="p-4">
-              <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-lg h-32 mb-3 flex items-center justify-center text-white">
-                <Video className="h-12 w-12" />
-              </div>
-              <h3 className="font-medium text-sm mb-2">{video.title}</h3>
-              <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
-                <span>{video.duration}</span>
-                <span>{video.views} views</span>
-              </div>
-              <Badge variant="outline" className="text-xs">{video.language}</Badge>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderDroneTechSection = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">
-        {language === 'en' ? 'Smart Drone Technology' : language === 'hi' ? 'स्मार्ट ड्रोन तकनीक' : 'స్మార్ట్ డ్రోన్ టెక్నాలజీ'}
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {[
-          {
-            title: language === 'en' ? 'Fertilizer Spraying' : language === 'hi' ? 'उर्वरक छिड़काव' : 'ఎరువుల స్ప్రేయింగ్',
-            description: language === 'en' ? 'Automated drone fertilizer application' : language === 'hi' ? 'स्वचालित ड्रोन उर्वरक अनुप्रयोग' : 'ఆటోమేటెడ్ డ్రోన్ ఎరువుల అనువర్తనం',
-            status: 'Available',
-            icon: '💧'
-          },
-          {
-            title: language === 'en' ? 'Precision Sowing' : language === 'hi' ? 'सटीक बुआई' : 'ఖచ్చితమైన విత్తనాలు',
-            description: language === 'en' ? 'GPS-guided seed planting' : language === 'hi' ? 'GPS-निर्देशित बीज रोपण' : 'GPS-గైడెడ్ సీడ్ ప్లాంటింగ్',
-            status: 'Coming Soon',
-            icon: '🌱'
-          },
-          {
-            title: language === 'en' ? 'Crop Monitoring' : language === 'hi' ? 'फसल निगरानी' : 'పంట పర్యవేక్షణ',
-            description: language === 'en' ? 'Real-time crop health analysis' : language === 'hi' ? 'वास्तविक समय फसल स्वास्थ्य विश्लेषण' : 'రియల్ టైమ్ పంట ఆరోగ్య విశ్లేషణ',
-            status: 'Active',
-            icon: '📊'
-          },
-          {
-            title: language === 'en' ? 'Harvest Insights' : language === 'hi' ? 'फसल अंतर्दृष्टि' : 'హార్వెస్ట్ అంతర్దృష్టులు',
-            description: language === 'en' ? 'AI-powered harvest predictions' : language === 'hi' ? 'AI-संचालित फसल पूर्वानुमान' : 'AI-శక్తితో కూడిన హార్వెస్ట్ అంచనాలు',
-            status: 'Beta',
-            icon: '🚜'
-          }
-        ].map((tech, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{tech.icon}</span>
-                  <CardTitle className="text-lg">{tech.title}</CardTitle>
-                </div>
-                <Badge variant={tech.status === 'Active' ? 'default' : tech.status === 'Available' ? 'outline' : 'secondary'}>
-                  {tech.status}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">{tech.description}</p>
-              <Button 
-                className="w-full" 
-                disabled={tech.status === 'Coming Soon'}
-                variant={tech.status === 'Active' ? 'default' : 'outline'}
-              >
-                {tech.status === 'Coming Soon' ? 'Notify When Ready' : 'Learn More'}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderContractsSection = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('contracts')}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {[
-          {
-            title: 'Cotton Cultivation Contract',
-            area: '5 acres',
-            duration: '6 months',
-            payment: '₹50,000',
-            status: 'Open',
-            type: 'Full Service'
-          },
-          {
-            title: 'Organic Vegetable Farming',
-            area: '2 acres',
-            duration: '4 months',
-            payment: '₹25,000',
-            status: 'Limited Spots',
-            type: 'Organic'
-          },
-          {
-            title: 'Rice Cultivation',
-            area: '10 acres',
-            duration: '8 months',
-            payment: '₹80,000',
-            status: 'Open',
-            type: 'Traditional'
-          },
-          {
-            title: 'Tomato Greenhouse',
-            area: '1 acre',
-            duration: '6 months',
-            payment: '₹35,000',
-            status: 'Closing Soon',
-            type: 'High-Tech'
-          }
-        ].map((contract, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{contract.title}</CardTitle>
-                <Badge variant={contract.status === 'Open' ? 'default' : contract.status === 'Closing Soon' ? 'destructive' : 'secondary'}>
-                  {contract.status}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Area:</span>
-                  <span className="font-medium">{contract.area}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Duration:</span>
-                  <span className="font-medium">{contract.duration}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Payment:</span>
-                  <span className="font-bold text-green-600">{contract.payment}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Type:</span>
-                  <span className="font-medium">{contract.type}</span>
-                </div>
-              </div>
-              <Button 
-                className="w-full" 
-                disabled={contract.status === 'Closing Soon'}
-                variant={contract.status === 'Open' ? 'default' : 'outline'}
-              >
-                {contract.status === 'Closing Soon' ? 'Application Closed' : t('apply')}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderCurrentSection = () => {
-    switch (activeSection) {
-      case 'dashboard':
-        return (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <IoTDashboard />
-                <DroneMonitor />
-              </div>
-              <div className="space-y-6">
-                <WeatherService />
-                <DronePatrolCard language={language} />
-                <MarketPricesCard language={language} />
-              </div>
+  const renderServiceContent = (serviceId: string) => {
+    const mockData = {
+      'farming-shopping': {
+        title: t('farmingShoppingTitle'),
+        content: (
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { name: t('seeds'), price: '₹150/kg', image: '🌱', stock: 'In Stock' },
+                { name: t('fertilizer'), price: '₹400/bag', image: '🧪', stock: 'Limited' },
+                { name: t('tools'), price: '₹2,500', image: '🔧', stock: 'In Stock' },
+                { name: t('pesticides'), price: '₹350/L', image: '🧴', stock: 'In Stock' }
+              ].map((item, index) => (
+                <Card key={index} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="text-4xl mb-2">{item.image}</div>
+                    <h4 className="font-semibold">{item.name}</h4>
+                    <p className="text-lg font-bold text-green-600">{item.price}</p>
+                    <Badge variant={item.stock === 'In Stock' ? 'default' : 'secondary'}>
+                      {item.stock}
+                    </Badge>
+                    <Button className="w-full mt-2" size="sm">
+                      {t('addToCart')}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-        );
-      case 'emergency':
-        return <EmergencySection />;
-      case 'shopping':
-        return renderShoppingSection();
-      case 'videos':
-        return renderVideosSection();
-      case 'market':
-        return <MarketPricesCard language={language} />;
-      case 'drainage':
-        return <FarmingServicesCard language={language} />;
-      case 'drone-tech':
-        return renderDroneTechSection();
-      case 'contracts':
-        return renderContractsSection();
-      case 'plant-health':
-        return <PlantHealthCard language={language} />;
-      case 'weather':
-        return <WeatherService />;
-      case 'admin':
-        return <AdminDashboard />;
-      default:
-        return renderCurrentSection();
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      <div className="container mx-auto px-4 py-6">
-        {/* Navigation Menu */}
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
-          <div className="flex flex-wrap gap-2">
-            {menuItems
-              .filter(item => !item.adminOnly || user?.name === 'admin')
-              .map((item) => (
-              <Button
-                key={item.id}
-                variant={activeSection === item.id ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setActiveSection(item.id)}
-                className="flex items-center gap-2"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Button>
+        )
+      },
+      'video-guides': {
+        title: t('videoGuidesTitle'),
+        content: (
+          <div className="space-y-4">
+            <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
+              <PlayCircle className="w-16 h-16 text-gray-400" />
+            </div>
+            <h4 className="font-semibold">{t('organicFarmingGuide')}</h4>
+            <p className="text-gray-600">{t('organicFarmingDesc')}</p>
+          </div>
+        )
+      },
+      'market-prices': {
+        title: t('marketPricesTitle'),
+        content: (
+          <div className="space-y-4">
+            {[
+              { crop: t('rice'), price: '₹25/kg', change: '+2.3%', trend: 'up' },
+              { crop: t('wheat'), price: '₹23/kg', change: '-1.2%', trend: 'down' },
+              { crop: t('cotton'), price: '₹65/kg', change: '+5.1%', trend: 'up' },
+              { crop: t('sugarcane'), price: '₹3.2/kg', change: '+0.8%', trend: 'up' }
+            ].map((item, index) => (
+              <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span className="font-medium">{item.crop}</span>
+                <div className="text-right">
+                  <div className="font-bold">{item.price}</div>
+                  <div className={`text-sm ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                    {item.change}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-        </div>
+        )
+      }
+    };
 
-        {/* Main Content */}
-        {renderCurrentSection()}
+    return mockData[serviceId] || { title: t('comingSoon'), content: <div>{t('featureComingSoon')}</div> };
+  };
+
+  if (showAdmin && isAdmin) {
+    return <AdminDashboard onClose={() => setShowAdmin(false)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-white">
+      <Navigation />
+      
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-blue-600 text-white">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              {t('welcomeToAgroGuard')}
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-90">
+              {t('smartFarmingSolution')}
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100">
+                {t('getStarted')}
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">
+                {t('watchDemo')}
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <div className="container mx-auto px-4 py-8">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {quickStats.map((stat, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 text-center">
+                <stat.icon className={`w-8 h-8 mx-auto mb-2 ${stat.color}`} />
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            {/* Emergency Section */}
+            <div className="mb-8">
+              <EmergencySection />
+            </div>
+
+            {/* Services Grid */}
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  {t('farmingServices')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {selectedService ? (
+                  <div>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSelectedService(null)}
+                      className="mb-4"
+                    >
+                      ← {t('backToServices')}
+                    </Button>
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold">
+                        {renderServiceContent(selectedService).title}
+                      </h3>
+                      {renderServiceContent(selectedService).content}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {services.map((service) => (
+                      <Card 
+                        key={service.id} 
+                        className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        onClick={() => setSelectedService(service.id)}
+                      >
+                        <CardContent className="p-6">
+                          <div className={`w-12 h-12 rounded-lg ${service.color} flex items-center justify-center mb-4`}>
+                            <service.icon className="w-6 h-6" />
+                          </div>
+                          <h3 className="font-semibold mb-2">{service.title}</h3>
+                          <p className="text-sm text-gray-600">{service.description}</p>
+                          <Badge variant="outline" className="mt-2">
+                            {service.category}
+                          </Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Admin Access */}
+            {isAdmin && (
+              <Card className="mb-8">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold">{t('adminPanel')}</h3>
+                      <p className="text-sm text-gray-600">{t('manageSystem')}</p>
+                    </div>
+                    <Button onClick={() => setShowAdmin(true)}>
+                      {t('openDashboard')}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Weather Widget */}
+            <WeatherService />
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  {t('quickActions')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start gap-2">
+                  <Phone className="w-4 h-4" />
+                  {t('emergencyCall')}
+                </Button>
+                <Button variant="outline" className="w-full justify-start gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  {t('reportIssue')}
+                </Button>
+                <Button variant="outline" className="w-full justify-start gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  {t('contactSupport')}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Recent Updates */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  {t('recentUpdates')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { title: t('weatherAlert'), time: '2 min ago', type: 'warning' },
+                  { title: t('marketUpdate'), time: '15 min ago', type: 'info' },
+                  { title: t('newGuide'), time: '1 hour ago', type: 'success' }
+                ].map((update, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className={`w-2 h-2 rounded-full mt-2 ${
+                      update.type === 'warning' ? 'bg-yellow-500' :
+                      update.type === 'info' ? 'bg-blue-500' : 'bg-green-500'
+                    }`}></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{update.title}</p>
+                      <p className="text-xs text-gray-500">{update.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Chatbot */}
       <ChatbotEnhanced />
     </div>
   );

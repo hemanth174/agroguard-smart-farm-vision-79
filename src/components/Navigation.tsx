@@ -8,91 +8,198 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, User, Globe, WifiOff } from 'lucide-react';
+import { Bell, User, Globe, WifiOff, Menu, X, Settings, HelpCircle } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation } from '@/utils/i18n';
+import { useState } from 'react';
 
 const Navigation = () => {
   const { language, setLanguage, user, signOut, alerts, isOnline } = useApp();
   const { t } = useTranslation(language);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const languages = {
-    en: 'English',
-    hi: 'हिंदी',
-    te: 'తెలుగు'
+    en: { name: 'English', flag: '🇺🇸' },
+    hi: { name: 'हिंदी', flag: '🇮🇳' },
+    te: { name: 'తెలుగు', flag: '🇮🇳' }
   };
 
   const activeAlerts = alerts.filter(alert => !alert.resolved);
 
+  const navItems = [
+    { label: t('dashboard'), href: '#dashboard' },
+    { label: t('services'), href: '#services' },
+    { label: t('market'), href: '#market' },
+    { label: t('support'), href: '#support' }
+  ];
+
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AG</span>
+            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-white font-bold text-lg">AG</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">AgroGuard</span>
-            {!isOnline && (
-              <Badge variant="destructive" className="flex items-center gap-1">
-                <WifiOff className="w-3 h-3" />
-                {t('offline')}
-              </Badge>
-            )}
+            <div>
+              <span className="text-xl font-bold text-gray-900">AgroGuard</span>
+              <div className="flex items-center gap-2">
+                {!isOnline && (
+                  <Badge variant="destructive" className="flex items-center gap-1 text-xs">
+                    <WifiOff className="w-3 h-3" />
+                    {t('offline')}
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-gray-600 hover:text-green-600 transition-colors font-medium"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2 hidden sm:flex">
                   <Globe className="w-4 h-4" />
-                  {languages[language]}
+                  <span className="hidden lg:inline">{languages[language].name}</span>
+                  <span className="lg:hidden">{languages[language].flag}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setLanguage('en')}>
-                  English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('hi')}>
-                  हिंदी
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('te')}>
-                  తెలుగు
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-48">
+                {Object.entries(languages).map(([key, lang]) => (
+                  <DropdownMenuItem
+                    key={key}
+                    onClick={() => setLanguage(key as any)}
+                    className="flex items-center gap-2"
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.name}</span>
+                    {language === key && <Badge variant="secondary" className="ml-auto">Active</Badge>}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Notifications */}
-            <Button variant="outline" size="sm" className="relative">
-              <Bell className="w-4 h-4" />
-              {activeAlerts.length > 0 && (
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs p-0 flex items-center justify-center bg-red-500">
-                  {activeAlerts.length}
-                </Badge>
-              )}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="relative">
+                  <Bell className="w-4 h-4" />
+                  {activeAlerts.length > 0 && (
+                    <Badge className="absolute -top-2 -right-2 w-5 h-5 text-xs p-0 flex items-center justify-center bg-red-500 hover:bg-red-600">
+                      {activeAlerts.length}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <div className="p-2 border-b">
+                  <p className="font-semibold">{t('notifications')}</p>
+                </div>
+                {activeAlerts.length > 0 ? (
+                  activeAlerts.slice(0, 3).map((alert, index) => (
+                    <DropdownMenuItem key={index} className="flex-col items-start p-3">
+                      <span className="font-medium">{alert.title}</span>
+                      <span className="text-sm text-gray-500">{alert.message}</span>
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <DropdownMenuItem className="text-gray-500">
+                    {t('noNewNotifications')}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="gap-2">
                   <User className="w-4 h-4" />
-                  {user?.name}
+                  <span className="hidden sm:inline">{user?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>{t('profile')}</DropdownMenuItem>
-                <DropdownMenuItem>{t('support')}</DropdownMenuItem>
-                <DropdownMenuItem onClick={signOut}>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {t('profile')}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  {t('settings')}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <HelpCircle className="w-4 h-4" />
+                  {t('support')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 text-red-600">
                   {t('signOut')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Mobile Menu Toggle */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 py-4">
+            <div className="space-y-2">
+              {navItems.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="block px-3 py-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            
+            {/* Mobile Language Selector */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-sm font-medium text-gray-500 mb-2">{t('language')}</p>
+              <div className="flex gap-2">
+                {Object.entries(languages).map(([key, lang]) => (
+                  <Button
+                    key={key}
+                    variant={language === key ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setLanguage(key as any)}
+                    className="flex items-center gap-1"
+                  >
+                    <span>{lang.flag}</span>
+                    <span className="text-xs">{lang.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
