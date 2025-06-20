@@ -8,6 +8,7 @@ import { ShoppingCart, Plus, Minus, Search, Filter } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
+import type { User } from '@supabase/supabase-js';
 
 interface Product {
   id: string;
@@ -67,7 +68,7 @@ const ShoppingService = () => {
   };
 
   const fetchCartItems = async () => {
-    if (!user) return;
+    if (!user?.id) return;
 
     try {
       const { data, error } = await supabase
@@ -86,7 +87,7 @@ const ShoppingService = () => {
   };
 
   const addToCart = async (product: Product) => {
-    if (!user) {
+    if (!user?.id) {
       toast({
         title: 'Please sign in',
         description: 'You need to be signed in to add items to cart',
@@ -164,7 +165,7 @@ const ShoppingService = () => {
   };
 
   const processPayment = async () => {
-    if (!user || cartItems.length === 0) return;
+    if (!user?.id || cartItems.length === 0) return;
 
     const totalAmount = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 

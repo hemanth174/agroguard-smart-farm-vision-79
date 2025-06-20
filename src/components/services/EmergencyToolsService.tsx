@@ -9,6 +9,7 @@ import { Phone, AlertTriangle, Camera, MapPin, Clock, Bell } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
+import type { User } from '@supabase/supabase-js';
 
 interface EmergencyReport {
   reportType: string;
@@ -59,7 +60,7 @@ const EmergencyToolsService = () => {
   };
 
   const submitReport = async () => {
-    if (!user) {
+    if (!user?.id) {
       toast({
         title: 'Please sign in',
         description: 'You need to be signed in to submit emergency reports',

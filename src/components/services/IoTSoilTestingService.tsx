@@ -8,6 +8,7 @@ import { Activity, Droplets, Zap, Leaf, TrendingUp, TrendingDown } from 'lucide-
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
+import type { User } from '@supabase/supabase-js';
 
 interface SoilTestData {
   fieldLocation: string;
@@ -115,7 +116,7 @@ const IoTSoilTestingService = () => {
   };
 
   const saveResults = async () => {
-    if (!user || !recommendations) {
+    if (!user?.id || !recommendations) {
       toast({
         title: 'Cannot save',
         description: 'Please sign in and run analysis first',
