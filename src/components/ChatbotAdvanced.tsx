@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,33 +28,37 @@ const ChatbotAdvanced = () => {
 
   // Initialize speech recognition
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      
-      // Set language based on app language
-      const speechLang = {
-        'en': 'en-US',
-        'hi': 'hi-IN',
-        'te': 'te-IN'
-      };
-      recognitionRef.current.lang = speechLang[language] || 'en-US';
+    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      try {
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognitionAPI();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        
+        // Set language based on app language
+        const speechLang = {
+          'en': 'en-US',
+          'hi': 'hi-IN',
+          'te': 'te-IN'
+        };
+        recognitionRef.current.lang = speechLang[language] || 'en-US';
 
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setInputMessage(transcript);
-        setIsListening(false);
-      };
+        recognitionRef.current.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          setInputMessage(transcript);
+          setIsListening(false);
+        };
 
-      recognitionRef.current.onerror = () => {
-        setIsListening(false);
-      };
+        recognitionRef.current.onerror = () => {
+          setIsListening(false);
+        };
 
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+        };
+      } catch (error) {
+        console.log('Speech recognition not available:', error);
+      }
     }
   }, [language]);
 
@@ -181,26 +184,40 @@ const ChatbotAdvanced = () => {
       setIsTyping(false);
       
       // Text-to-speech for bot responses (if available)
-      if ('speechSynthesis' in window && isOnline) {
-        const utterance = new SpeechSynthesisUtterance(response);
-        utterance.lang = language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-US';
-        utterance.rate = 0.8;
-        speechSynthesis.speak(utterance);
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window && isOnline) {
+        try {
+          const utterance = new SpeechSynthesisUtterance(response);
+          utterance.lang = language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-US';
+          utterance.rate = 0.8;
+          speechSynthesis.speak(utterance);
+        } catch (error) {
+          console.log('Text-to-speech not available:', error);
+        }
       }
     }, 1000 + Math.random() * 2000);
   };
 
   const startVoiceRecognition = () => {
     if (recognitionRef.current && isOnline) {
-      setIsListening(true);
-      recognitionRef.current.start();
+      try {
+        setIsListening(true);
+        recognitionRef.current.start();
+      } catch (error) {
+        console.log('Speech recognition error:', error);
+        setIsListening(false);
+      }
     }
   };
 
   const stopVoiceRecognition = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      try {
+        recognitionRef.current.stop();
+        setIsListening(false);
+      } catch (error) {
+        console.log('Speech recognition stop error:', error);
+        setIsListening(false);
+      }
     }
   };
 
@@ -303,7 +320,7 @@ const ChatbotAdvanced = () => {
               size="sm"
               variant="outline"
               onClick={isListening ? stopVoiceRecognition : startVoiceRecognition}
-              disabled={!isOnline}
+              disabled={!isOnline || !recognitionRef.current}
               className={isListening ? 'bg-red-50 border-red-200' : ''}
             >
               {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
