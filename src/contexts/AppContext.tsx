@@ -5,8 +5,6 @@ interface User {
   name: string;
   mobile: string;
   location: string;
-  email?: string;
-  image?: string;
 }
 
 interface IoTData {
