@@ -3,51 +3,25 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface MarketPricesCardProps {
   language: string;
 }
 
 const MarketPricesCard = ({ language }: MarketPricesCardProps) => {
-  const translations = {
-    en: {
-      title: 'Market Prices',
-      rice: 'Rice',
-      wheat: 'Wheat',
-      cotton: 'Cotton',
-      perQuintal: '/quintal',
-      updated: 'Updated 1 hour ago'
-    },
-    hi: {
-      title: 'बाज़ार मूल्य',
-      rice: 'चावल',
-      wheat: 'गेहूं',
-      cotton: 'कपास',
-      perQuintal: '/क्विंटल',
-      updated: '1 घंटे पहले अपडेट किया गया'
-    },
-    te: {
-      title: 'మార్కెట్ ధరలు',
-      rice: 'వరి',
-      wheat: 'గోధుమ',
-      cotton: 'పత్తి',
-      perQuintal: '/క్వింటల్',
-      updated: '1 గంట క్రితం నవీకరించబడింది'
-    }
-  };
-
-  const t = translations[language];
+  const { t } = useTranslation(language as Language);
 
   const priceData = [
-    { crop: t.rice, price: '₹2,450', trend: 'up', change: '+₹50' },
-    { crop: t.wheat, price: '₹2,100', trend: 'down', change: '-₹25' },
-    { crop: t.cotton, price: '₹5,800', trend: 'up', change: '+₹100' }
+    { crop: t('rice'), price: '₹2,450', trend: 'up', change: '+₹50' },
+    { crop: t('wheat'), price: '₹2,100', trend: 'down', change: '-₹25' },
+    { crop: t('cotton'), price: '₹5,800', trend: 'up', change: '+₹100' }
   ];
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">{t.title}</CardTitle>
+        <CardTitle className="text-lg font-semibold">{t('marketPrices')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -55,7 +29,7 @@ const MarketPricesCard = ({ language }: MarketPricesCardProps) => {
             <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
                 <h4 className="font-medium text-gray-900">{item.crop}</h4>
-                <p className="text-sm text-gray-500">{item.price}{t.perQuintal}</p>
+                <p className="text-sm text-gray-500">{item.price}/quintal</p>
               </div>
               <div className="flex items-center gap-2">
                 {item.trend === 'up' ? (
@@ -72,7 +46,7 @@ const MarketPricesCard = ({ language }: MarketPricesCardProps) => {
               </div>
             </div>
           ))}
-          <p className="text-xs text-gray-500 text-center pt-2">{t.updated}</p>
+          <p className="text-xs text-gray-500 text-center pt-2">Updated 1 hour ago</p>
         </div>
       </CardContent>
     </Card>
