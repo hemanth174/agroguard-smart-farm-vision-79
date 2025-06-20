@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,14 @@ import {
   Eye
 } from 'lucide-react';
 import { useDronePatrol } from '@/hooks/useDronePatrol';
+
+// Type guard for GPS location
+const isGpsLocation = (location: any): location is { lat: number; lng: number } => {
+  return location && 
+         typeof location === 'object' && 
+         typeof location.lat === 'number' && 
+         typeof location.lng === 'number';
+};
 
 const DroneAlertsPanel = () => {
   const { alerts, acknowledgeAlert, resolveAlert, loading } = useDronePatrol();
@@ -172,11 +181,11 @@ const DroneAlertsPanel = () => {
                           <Clock className="h-3 w-3" />
                           <span>{new Date(alert.created_at).toLocaleString()}</span>
                         </div>
-                        {alert.gps_location && (
+                        {isGpsLocation(alert.gps_location) && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             <span>
-                              {alert.gps_location.lat?.toFixed(4)}, {alert.gps_location.lng?.toFixed(4)}
+                              {alert.gps_location.lat.toFixed(4)}, {alert.gps_location.lng.toFixed(4)}
                             </span>
                           </div>
                         )}
@@ -229,11 +238,11 @@ const DroneAlertsPanel = () => {
                           <Clock className="h-3 w-3" />
                           <span>{new Date(alert.created_at).toLocaleString()}</span>
                         </div>
-                        {alert.gps_location && (
+                        {isGpsLocation(alert.gps_location) && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             <span>
-                              {alert.gps_location.lat?.toFixed(4)}, {alert.gps_location.lng?.toFixed(4)}
+                              {alert.gps_location.lat.toFixed(4)}, {alert.gps_location.lng.toFixed(4)}
                             </span>
                           </div>
                         )}
@@ -286,11 +295,11 @@ const DroneAlertsPanel = () => {
                           <Clock className="h-3 w-3" />
                           <span>{new Date(alert.created_at).toLocaleString()}</span>
                         </div>
-                        {alert.gps_location && (
+                        {isGpsLocation(alert.gps_location) && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             <span>
-                              {alert.gps_location.lat?.toFixed(4)}, {alert.gps_location.lng?.toFixed(4)}
+                              {alert.gps_location.lat.toFixed(4)}, {alert.gps_location.lng.toFixed(4)}
                             </span>
                           </div>
                         )}
