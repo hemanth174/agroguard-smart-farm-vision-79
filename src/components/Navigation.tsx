@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -55,10 +56,10 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-lg">AG</span>
+              <span className="text-white font-bold text-lg">VE</span>
             </div>
             <div>
-              <span className="text-xl font-bold text-gray-900">AgroGuard</span>
+              <span className="text-xl font-bold text-gray-900">VillageEye</span>
               <div className="flex items-center gap-2">
                 {!isOnline && (
                   <Badge variant="destructive" className="flex items-center gap-1 text-xs">

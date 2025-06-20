@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,9 +32,9 @@ const SignIn = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">AG</span>
+            <span className="text-white font-bold text-2xl">VE</span>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">AgroGuard</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">VillageEye</CardTitle>
           <p className="text-gray-600">{t('signin')}</p>
         </CardHeader>
         <CardContent>

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
@@ -67,7 +68,7 @@ const Index = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">
-                {t('welcomeToAgroGuard')}, {user?.name}!
+                {t('welcomeToVillageEye')}, {user?.name}!
               </h1>
               <p className="text-green-100 text-lg">
                 {t('smartFarmingSolution')}
@@ -187,8 +188,8 @@ const Index = () => {
                       <span className="text-2xl">📧</span>
                       <div>
                         <p className="font-medium">Email Support</p>
-                        <a href="mailto:support@agroguard.com" className="text-purple-600 hover:underline">
-                          support@agroguard.com
+                        <a href="mailto:support@villageeye.com" className="text-purple-600 hover:underline">
+                          support@villageeye.com
                         </a>
                       </div>
                     </div>

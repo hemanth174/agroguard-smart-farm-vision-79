@@ -16,21 +16,21 @@ const ChatbotWidget = ({ language }: ChatbotWidgetProps) => {
 
   const translations = {
     en: {
-      title: 'AgroGuard Assistant',
+      title: 'VillageEye Assistant',
       placeholder: 'Ask about farming, weather, prices...',
       send: 'Send',
       voice: 'Voice',
       online: 'Online'
     },
     hi: {
-      title: 'एग्रोगार्ड सहायक',
+      title: 'विलेजआई सहायक',
       placeholder: 'कृषि, मौसम, मूल्य के बारे में पूछें...',
       send: 'भेजें',
       voice: 'आवाज़',
       online: 'ऑनलाइन'
     },
     te: {
-      title: 'అగ్రోగార్డ్ సహాయకుడు',
+      title: 'విలేజ్ఐ సహాయకుడు',
       placeholder: 'వ్యవసాయం, వాతావరణం, ధరల గురించి అడగండి...',
       send: 'పంపండి',
       voice: 'వాయిస్',
@@ -74,7 +74,7 @@ const ChatbotWidget = ({ language }: ChatbotWidgetProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-40 bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
-            <p>Hello! I'm your AgroGuard assistant. How can I help you today?</p>
+            <p>Hello! I'm your VillageEye assistant. How can I help you today?</p>
           </div>
           <div className="flex gap-2">
             <Input
