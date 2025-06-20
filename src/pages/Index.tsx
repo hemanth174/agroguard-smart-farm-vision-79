@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
 import SignIn from '@/components/SignIn';
@@ -26,6 +26,11 @@ const Index = () => {
   const { isSignedIn, language, user, alerts, iotData } = useApp();
   const { t } = useTranslation(language as Language);
   const [activeService, setActiveService] = useState<string | null>(null);
+  const [realTimeStats, setRealTimeStats] = useState({
+    totalFarms: 1247,
+    onlineFarmers: 834,
+    todayUpdates: 23
+  });
 
   if (!isSignedIn) {
     return <SignIn />;
@@ -33,11 +38,24 @@ const Index = () => {
 
   const activeAlerts = alerts.filter(alert => !alert.resolved);
 
+  // Real-time stats updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRealTimeStats(prev => ({
+        totalFarms: prev.totalFarms + Math.floor(Math.random() * 3),
+        onlineFarmers: Math.max(800, prev.onlineFarmers + Math.floor(Math.random() * 10 - 5)),
+        todayUpdates: prev.todayUpdates + Math.floor(Math.random() * 2)
+      }));
+    }, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const quickStats = [
-    { label: t('totalFarms'), value: '1,247', icon: TrendingUp, color: 'text-green-600' },
+    { label: t('totalFarms'), value: realTimeStats.totalFarms.toLocaleString(), icon: TrendingUp, color: 'text-green-600' },
     { label: t('activeAlerts'), value: activeAlerts.length.toString(), icon: Bell, color: 'text-red-600' },
-    { label: t('onlineFarmers'), value: '834', icon: Users, color: 'text-blue-600' },
-    { label: t('todayUpdates'), value: '23', icon: Activity, color: 'text-purple-600' }
+    { label: t('onlineFarmers'), value: realTimeStats.onlineFarmers.toLocaleString(), icon: Users, color: 'text-blue-600' },
+    { label: t('todayUpdates'), value: realTimeStats.todayUpdates.toString(), icon: Activity, color: 'text-purple-600' }
   ];
 
   const renderServiceContent = () => {
@@ -85,7 +103,7 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Quick Stats with Real-time Updates */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {quickStats.map((stat, index) => (
             <Card key={index} className="hover:shadow-md transition-shadow bg-white/80 backdrop-blur-sm">
@@ -93,7 +111,7 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
                     <p className="text-xs md:text-sm font-medium text-gray-600 truncate">{stat.label}</p>
-                    <p className="text-lg md:text-2xl font-bold text-gray-900">{stat.value}</p>
+                    <p className="text-lg md:text-2xl font-bold text-gray-900 animate-pulse">{stat.value}</p>
                   </div>
                   <stat.icon className={`h-6 w-6 md:h-8 md:w-8 ${stat.color} flex-shrink-0`} />
                 </div>
@@ -131,7 +149,7 @@ const Index = () => {
               <WeatherService />
             </div>
             
-            {/* IoT Tester */}
+            {/* IoT Tester with Current Values */}
             <div className="overflow-hidden">
               <IoTTester />
             </div>
@@ -170,18 +188,6 @@ const Index = () => {
               <div className="max-w-full">
                 {renderServiceContent()}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Market Section */}
-        <div id="market">
-          <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-lg md:text-xl font-bold">{t('marketPrices')}</CardTitle>
-            </CardHeader>
-            <CardContent className="overflow-hidden">
-              <MarketPricesCard language={language} />
             </CardContent>
           </Card>
         </div>

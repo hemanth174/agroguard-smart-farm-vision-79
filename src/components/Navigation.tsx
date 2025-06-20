@@ -154,12 +154,12 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* User Menu */}
+            {/* User Menu - Fixed overflow issue */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">{user?.name}</span>
+                <Button variant="outline" size="sm" className="gap-2 max-w-40">
+                  <User className="w-4 h-4 flex-shrink-0" />
+                  <span className="hidden sm:inline truncate">{user?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-white z-50">

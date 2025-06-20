@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Plus, Minus, Search, Filter, CreditCard, Trash2 } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Search, Filter, CreditCard, Trash2, MapPin, Smartphone, DollarSign } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/hooks/use-toast';
@@ -34,6 +34,8 @@ const ShoppingService = () => {
   const [loading, setLoading] = useState(true);
   const [showCart, setShowCart] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set());
   const { user } = useApp();
   const { toast } = useToast();
 
@@ -93,6 +95,16 @@ const ShoppingService = () => {
       });
       return;
     }
+
+    // Add animation
+    setAnimatingItems(prev => new Set(prev).add(product.id));
+    setTimeout(() => {
+      setAnimatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(product.id);
+        return newSet;
+      });
+    }, 600);
 
     const existingItem = cartItems.find(item => item.product_id === product.id);
     let updatedCart: CartItem[];
@@ -154,7 +166,7 @@ const ShoppingService = () => {
     saveCartToStorage([]);
   };
 
-  const processPayment = async () => {
+  const processPayment = async (paymentMethod: string) => {
     if (!user?.name || cartItems.length === 0) return;
 
     setPaymentLoading(true);
@@ -168,14 +180,30 @@ const ShoppingService = () => {
       const isSuccess = Math.random() > 0.1; // 90% success rate
 
       if (isSuccess) {
+        let paymentMessage = '';
+        switch (paymentMethod) {
+          case 'bank':
+            paymentMessage = `Bank transfer successful! Amount: ₹${totalAmount.toFixed(2)}`;
+            break;
+          case 'upi':
+            paymentMessage = `UPI payment successful! Amount: ₹${totalAmount.toFixed(2)}`;
+            break;
+          case 'cash':
+            paymentMessage = `Cash payment arranged at VillageEye center. Amount: ₹${totalAmount.toFixed(2)}`;
+            break;
+          default:
+            paymentMessage = `Payment successful! Amount: ₹${totalAmount.toFixed(2)}`;
+        }
+
         toast({
           title: 'Payment Successful!',
-          description: `Order placed successfully! Amount: ₹${totalAmount.toFixed(2)}`,
+          description: paymentMessage,
         });
 
         // Clear cart after successful payment
         clearCart();
         setShowCart(false);
+        setShowPaymentOptions(false);
       } else {
         toast({
           title: 'Payment Failed',
@@ -215,13 +243,13 @@ const ShoppingService = () => {
         <h2 className="text-xl md:text-2xl font-bold">🛒 Shopping</h2>
         <Button
           onClick={() => setShowCart(!showCart)}
-          className="relative"
+          className="relative transition-all duration-300 hover:scale-105"
           variant="outline"
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
           Cart ({cartItemsCount})
           {cartItemsCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 text-xs">
+            <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 text-xs animate-bounce">
               {cartItemsCount}
             </Badge>
           )}
@@ -230,7 +258,7 @@ const ShoppingService = () => {
 
       {/* Cart Modal */}
       {showCart && (
-        <Card className="border-2 border-green-200">
+        <Card className="border-2 border-green-200 animate-fade-in">
           <CardHeader>
             <CardTitle className="flex justify-between items-center text-lg">
               Shopping Cart
@@ -243,7 +271,7 @@ const ShoppingService = () => {
             ) : (
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-gray-50 rounded-lg gap-3">
+                  <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-gray-50 rounded-lg gap-3 transition-all duration-200 hover:bg-gray-100">
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{item.product.name}</h4>
                       <p className="text-sm text-gray-600">₹{item.product.price} each</p>
@@ -253,6 +281,7 @@ const ShoppingService = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                        className="hover:scale-110 transition-transform"
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
@@ -261,6 +290,7 @@ const ShoppingService = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                        className="hover:scale-110 transition-transform"
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
@@ -268,6 +298,7 @@ const ShoppingService = () => {
                         size="sm"
                         variant="destructive"
                         onClick={() => removeFromCart(item.id)}
+                        className="hover:scale-110 transition-transform"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -278,24 +309,65 @@ const ShoppingService = () => {
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-bold">Total: ₹{cartTotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button
-                      onClick={clearCart}
-                      variant="outline"
-                      className="flex-1"
-                    >
-                      Clear Cart
-                    </Button>
-                    <Button
-                      onClick={processPayment}
-                      className="flex-1 bg-green-600 hover:bg-green-700"
-                      size="lg"
-                      disabled={paymentLoading}
-                    >
-                      <CreditCard className="h-4 w-4 mr-2" />
-                      {paymentLoading ? 'Processing...' : `Pay ₹${cartTotal.toFixed(2)}`}
-                    </Button>
-                  </div>
+                  
+                  {!showPaymentOptions ? (
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button
+                        onClick={clearCart}
+                        variant="outline"
+                        className="flex-1"
+                      >
+                        Clear Cart
+                      </Button>
+                      <Button
+                        onClick={() => setShowPaymentOptions(true)}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        size="lg"
+                      >
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Proceed to Payment
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <h4 className="font-semibold">Choose Payment Method:</h4>
+                      
+                      <Button
+                        onClick={() => processPayment('bank')}
+                        disabled={paymentLoading}
+                        className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        {paymentLoading ? 'Processing...' : 'Bank Transfer'}
+                      </Button>
+                      
+                      <Button
+                        onClick={() => processPayment('upi')}
+                        disabled={paymentLoading}
+                        className="w-full bg-purple-600 hover:bg-purple-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <Smartphone className="h-4 w-4 mr-2" />
+                        {paymentLoading ? 'Processing...' : 'UPI Payment'}
+                      </Button>
+                      
+                      <Button
+                        onClick={() => processPayment('cash')}
+                        disabled={paymentLoading}
+                        className="w-full bg-green-600 hover:bg-green-700 transition-all duration-200 hover:scale-105"
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        {paymentLoading ? 'Processing...' : 'Cash at VillageEye Center'}
+                      </Button>
+                      
+                      <Button
+                        onClick={() => setShowPaymentOptions(false)}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Back to Cart
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -330,7 +402,7 @@ const ShoppingService = () => {
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {filteredProducts.map((product) => (
-          <Card key={product.id} className="hover:shadow-lg transition-shadow">
+          <Card key={product.id} className={`hover:shadow-lg transition-all duration-300 hover:scale-105 ${animatingItems.has(product.id) ? 'animate-pulse border-green-500' : ''}`}>
             <CardContent className="p-3 md:p-4">
               <img
                 src={product.image_url}
@@ -344,7 +416,7 @@ const ShoppingService = () => {
                 <span className="text-lg md:text-2xl font-bold text-green-600">₹{product.price}</span>
                 <Button
                   onClick={() => addToCart(product)}
-                  className="bg-green-600 hover:bg-green-700 text-xs md:text-sm w-full sm:w-auto"
+                  className={`bg-green-600 hover:bg-green-700 text-xs md:text-sm w-full sm:w-auto transition-all duration-200 hover:scale-105 ${animatingItems.has(product.id) ? 'animate-bounce' : ''}`}
                 >
                   <ShoppingCart className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Add to Cart
