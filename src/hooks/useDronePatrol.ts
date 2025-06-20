@@ -2,50 +2,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useApp } from '@/contexts/AppContext';
+import type { Tables } from '@/integrations/supabase/types';
 
-export interface DroneVideo {
-  id: string;
-  filename: string;
-  file_url: string;
-  file_size: number;
-  duration_seconds?: number;
-  upload_timestamp: string;
-  processing_status: 'pending' | 'processing' | 'completed' | 'failed';
-  gps_latitude?: number;
-  gps_longitude?: number;
-  field_sector?: string;
-  weather_conditions?: any;
-}
-
-export interface DroneDetection {
-  id: string;
-  video_id: string;
-  detection_type: string;
-  confidence_score: number;
-  timestamp_in_video?: number;
-  description: string;
-  severity_level: 'low' | 'medium' | 'high' | 'critical';
-  location_in_frame?: any;
-  gps_coordinates?: any;
-  ai_model_used?: string;
-  requires_action: boolean;
-  created_at: string;
-}
-
-export interface DroneAlert {
-  id: string;
-  detection_id?: string;
-  alert_type: string;
-  priority_level: 'low' | 'medium' | 'high' | 'critical';
-  title: string;
-  message: string;
-  status: 'active' | 'acknowledged' | 'resolved';
-  acknowledged_at?: string;
-  resolved_at?: string;
-  gps_location?: any;
-  action_required?: string;
-  created_at: string;
-}
+// Use the database types directly to avoid type mismatches
+export type DroneVideo = Tables<'drone_patrol_videos'>;
+export type DroneDetection = Tables<'drone_detections'>;
+export type DroneAlert = Tables<'drone_alerts'>;
 
 export const useDronePatrol = () => {
   const [videos, setVideos] = useState<DroneVideo[]>([]);

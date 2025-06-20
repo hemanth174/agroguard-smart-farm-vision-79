@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   AlertTriangle, 
-  Fire, 
+  Flame, 
   Bug, 
   Zap, 
   MapPin, 
@@ -21,7 +21,7 @@ const DroneAlertsPanel = () => {
 
   const getAlertIcon = (alertType: string) => {
     switch (alertType) {
-      case 'fire_detection': return <Fire className="h-4 w-4 text-red-500" />;
+      case 'fire_detection': return <Flame className="h-4 w-4 text-red-500" />;
       case 'pest_infestation': return <Bug className="h-4 w-4 text-orange-500" />;
       case 'animal_intrusion': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
       case 'pipeline_damage': return <Zap className="h-4 w-4 text-blue-500" />;
@@ -77,7 +77,7 @@ const DroneAlertsPanel = () => {
       {/* Critical Alerts Banner */}
       {criticalAlerts.length > 0 && (
         <Alert className="border-red-500 bg-red-50 animate-pulse">
-          <Fire className="h-4 w-4 text-red-500" />
+          <Flame className="h-4 w-4 text-red-500" />
           <AlertDescription className="text-red-800">
             <strong>🚨 EMERGENCY ALERT:</strong> {criticalAlerts.length} critical issue(s) require immediate attention!
           </AlertDescription>
@@ -93,7 +93,7 @@ const DroneAlertsPanel = () => {
                 <p className="text-2xl font-bold text-red-600">{criticalAlerts.length}</p>
                 <p className="text-sm text-gray-600">Critical</p>
               </div>
-              <Fire className="h-8 w-8 text-red-500" />
+              <Flame className="h-8 w-8 text-red-500" />
             </div>
           </CardContent>
         </Card>
