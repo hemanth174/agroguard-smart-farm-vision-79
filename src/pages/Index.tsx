@@ -62,23 +62,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-50 overflow-x-hidden">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-6 space-y-8">
+      <main className="container mx-auto px-4 py-6 space-y-8 max-w-full">
         {/* Welcome Section */}
-        <div id="dashboard" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white shadow-lg">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+        <div id="dashboard" className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-4 md:p-6 text-white shadow-lg">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 truncate">
                 {t('welcomeToVillageEye')}, {user?.name}!
               </h1>
-              <p className="text-green-100 text-lg">
+              <p className="text-green-100 text-sm md:text-lg">
                 {t('smartFarmingSolution')}
               </p>
             </div>
-            <div className="mt-4 md:mt-0">
-              <Badge className="bg-white text-green-600 hover:bg-white text-sm">
+            <div className="flex-shrink-0">
+              <Badge className="bg-white text-green-600 hover:bg-white text-xs md:text-sm">
                 📍 {user?.location}
               </Badge>
             </div>
@@ -86,16 +86,16 @@ const Index = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {quickStats.map((stat, index) => (
             <Card key={index} className="hover:shadow-md transition-shadow bg-white/80 backdrop-blur-sm">
-              <CardContent className="p-4">
+              <CardContent className="p-3 md:p-4">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-gray-600 truncate">{stat.label}</p>
+                    <p className="text-lg md:text-2xl font-bold text-gray-900">{stat.value}</p>
                   </div>
-                  <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                  <stat.icon className={`h-6 w-6 md:h-8 md:w-8 ${stat.color} flex-shrink-0`} />
                 </div>
               </CardContent>
             </Card>
@@ -106,46 +106,56 @@ const Index = () => {
         <div id="ai-detection">
           <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold flex items-center gap-2">
-                🤖 AI Video Detection System
-                <Badge className="bg-green-100 text-green-800">Telugu Alerts</Badge>
+              <CardTitle className="text-lg md:text-xl font-bold flex flex-col sm:flex-row sm:items-center gap-2">
+                <span>🤖 AI Video Detection System</span>
+                <Badge className="bg-green-100 text-green-800 text-xs">Telugu Alerts</Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-hidden">
               <DroneVideoDetection />
             </CardContent>
           </Card>
         </div>
 
         {/* Dashboard Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6 min-w-0">
             {/* IoT Dashboard */}
-            <IoTDashboard />
+            <div className="overflow-hidden">
+              <IoTDashboard />
+            </div>
             
             {/* Enhanced Weather Service */}
-            <WeatherService />
+            <div className="overflow-hidden">
+              <WeatherService />
+            </div>
             
             {/* IoT Tester */}
-            <IoTTester />
+            <div className="overflow-hidden">
+              <IoTTester />
+            </div>
           </div>
 
           {/* Right Column */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6 min-w-0">
             {/* Market Prices */}
-            <MarketPricesCard language={language} />
+            <div className="overflow-hidden">
+              <MarketPricesCard language={language} />
+            </div>
             
             {/* Emergency Section */}
-            <EmergencySection />
+            <div className="overflow-hidden">
+              <EmergencySection />
+            </div>
           </div>
         </div>
 
         {/* Services Section */}
         <div id="services">
           <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl font-bold">{t('farmingServices')}</CardTitle>
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <CardTitle className="text-lg md:text-xl font-bold">{t('farmingServices')}</CardTitle>
               {activeService && (
                 <Button 
                   variant="outline" 
@@ -156,8 +166,10 @@ const Index = () => {
                 </Button>
               )}
             </CardHeader>
-            <CardContent>
-              {renderServiceContent()}
+            <CardContent className="overflow-hidden">
+              <div className="max-w-full">
+                {renderServiceContent()}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -166,9 +178,9 @@ const Index = () => {
         <div id="market">
           <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('marketPrices')}</CardTitle>
+              <CardTitle className="text-lg md:text-xl font-bold">{t('marketPrices')}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-hidden">
               <MarketPricesCard language={language} />
             </CardContent>
           </Card>
@@ -178,33 +190,33 @@ const Index = () => {
         <div id="support">
           <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('support')}</CardTitle>
+              <CardTitle className="text-lg md:text-xl font-bold">{t('support')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div>
-                <h3 className="text-lg font-semibold mb-4">{t('contactSupport')}</h3>
+                <h3 className="text-base md:text-lg font-semibold mb-4">{t('contactSupport')}</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                    <span className="text-2xl">📞</span>
-                    <div>
-                      <p className="font-medium">{t('emergency')} / Customer Care</p>
-                      <a href="tel:6305003695" className="text-green-600 hover:underline">
+                    <span className="text-xl md:text-2xl">📞</span>
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm md:text-base">{t('emergency')} / Customer Care</p>
+                      <a href="tel:6305003695" className="text-green-600 hover:underline text-sm md:text-base">
                         6305003695
                       </a>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                    <span className="text-2xl">💬</span>
-                    <div>
-                      <p className="font-medium">{t('aiChatbot')}</p>
-                      <p className="text-sm text-gray-600">{t('aiChatbotDesc')}</p>
+                    <span className="text-xl md:text-2xl">💬</span>
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm md:text-base">{t('aiChatbot')}</p>
+                      <p className="text-xs md:text-sm text-gray-600">{t('aiChatbotDesc')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                    <span className="text-2xl">📧</span>
-                    <div>
-                      <p className="font-medium">Email Support</p>
-                      <a href="mailto:support@villageeye.com" className="text-purple-600 hover:underline">
+                    <span className="text-xl md:text-2xl">📧</span>
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm md:text-base">Email Support</p>
+                      <a href="mailto:support@villageeye.com" className="text-purple-600 hover:underline text-sm md:text-base break-all">
                         support@villageeye.com
                       </a>
                     </div>
