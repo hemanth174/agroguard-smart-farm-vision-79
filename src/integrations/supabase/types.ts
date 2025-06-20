@@ -115,6 +115,286 @@ export type Database = {
           },
         ]
       }
+      drone_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          action_required: string | null
+          alert_type: string
+          created_at: string
+          detection_id: string | null
+          escalated: boolean | null
+          escalation_count: number | null
+          gps_location: Json | null
+          id: string
+          message: string
+          notification_sent: boolean | null
+          priority_level: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          action_required?: string | null
+          alert_type: string
+          created_at?: string
+          detection_id?: string | null
+          escalated?: boolean | null
+          escalation_count?: number | null
+          gps_location?: Json | null
+          id?: string
+          message: string
+          notification_sent?: boolean | null
+          priority_level?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          action_required?: string | null
+          alert_type?: string
+          created_at?: string
+          detection_id?: string | null
+          escalated?: boolean | null
+          escalation_count?: number | null
+          gps_location?: Json | null
+          id?: string
+          message?: string
+          notification_sent?: boolean | null
+          priority_level?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drone_alerts_detection_id_fkey"
+            columns: ["detection_id"]
+            isOneToOne: false
+            referencedRelation: "drone_detections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drone_detections: {
+        Row: {
+          ai_model_used: string | null
+          confidence_score: number
+          created_at: string
+          description: string
+          detection_type: string
+          gps_coordinates: Json | null
+          id: string
+          location_in_frame: Json | null
+          requires_action: boolean | null
+          severity_level: string
+          timestamp_in_video: number | null
+          video_id: string
+        }
+        Insert: {
+          ai_model_used?: string | null
+          confidence_score: number
+          created_at?: string
+          description: string
+          detection_type: string
+          gps_coordinates?: Json | null
+          id?: string
+          location_in_frame?: Json | null
+          requires_action?: boolean | null
+          severity_level?: string
+          timestamp_in_video?: number | null
+          video_id: string
+        }
+        Update: {
+          ai_model_used?: string | null
+          confidence_score?: number
+          created_at?: string
+          description?: string
+          detection_type?: string
+          gps_coordinates?: Json | null
+          id?: string
+          location_in_frame?: Json | null
+          requires_action?: boolean | null
+          severity_level?: string
+          timestamp_in_video?: number | null
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drone_detections_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "drone_patrol_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drone_fleet: {
+        Row: {
+          battery_level: number | null
+          created_at: string
+          current_location: Json | null
+          drone_id: string
+          drone_name: string
+          flight_hours_total: number | null
+          id: string
+          is_active: boolean | null
+          last_maintenance: string | null
+          model: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          battery_level?: number | null
+          created_at?: string
+          current_location?: Json | null
+          drone_id: string
+          drone_name: string
+          flight_hours_total?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_maintenance?: string | null
+          model?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          battery_level?: number | null
+          created_at?: string
+          current_location?: Json | null
+          drone_id?: string
+          drone_name?: string
+          flight_hours_total?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_maintenance?: string | null
+          model?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      drone_patrol_sessions: {
+        Row: {
+          created_at: string
+          end_time: string | null
+          high_priority_alerts: number | null
+          id: string
+          notes: string | null
+          patrol_area: Json | null
+          planned_duration_minutes: number | null
+          session_name: string
+          start_time: string
+          status: string
+          total_detections: number | null
+          total_videos_uploaded: number | null
+          updated_at: string
+          user_id: string
+          weather_conditions: Json | null
+        }
+        Insert: {
+          created_at?: string
+          end_time?: string | null
+          high_priority_alerts?: number | null
+          id?: string
+          notes?: string | null
+          patrol_area?: Json | null
+          planned_duration_minutes?: number | null
+          session_name: string
+          start_time?: string
+          status?: string
+          total_detections?: number | null
+          total_videos_uploaded?: number | null
+          updated_at?: string
+          user_id: string
+          weather_conditions?: Json | null
+        }
+        Update: {
+          created_at?: string
+          end_time?: string | null
+          high_priority_alerts?: number | null
+          id?: string
+          notes?: string | null
+          patrol_area?: Json | null
+          planned_duration_minutes?: number | null
+          session_name?: string
+          start_time?: string
+          status?: string
+          total_detections?: number | null
+          total_videos_uploaded?: number | null
+          updated_at?: string
+          user_id?: string
+          weather_conditions?: Json | null
+        }
+        Relationships: []
+      }
+      drone_patrol_videos: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          field_sector: string | null
+          file_size: number | null
+          file_url: string
+          filename: string
+          gps_latitude: number | null
+          gps_longitude: number | null
+          id: string
+          processing_status: string
+          updated_at: string
+          upload_timestamp: string
+          user_id: string
+          weather_conditions: Json | null
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          field_sector?: string | null
+          file_size?: number | null
+          file_url: string
+          filename: string
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          id?: string
+          processing_status?: string
+          updated_at?: string
+          upload_timestamp?: string
+          user_id: string
+          weather_conditions?: Json | null
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          field_sector?: string | null
+          file_size?: number | null
+          file_url?: string
+          filename?: string
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          id?: string
+          processing_status?: string
+          updated_at?: string
+          upload_timestamp?: string
+          user_id?: string
+          weather_conditions?: Json | null
+        }
+        Relationships: []
+      }
       emergency_reports: {
         Row: {
           created_at: string
