@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle, X, Mic, Send, MicOff } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface Message {
   id: string;
@@ -18,7 +17,7 @@ interface Message {
 
 const ChatbotAdvanced = () => {
   const { language, user, isOnline } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');

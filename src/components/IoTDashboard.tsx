@@ -1,11 +1,10 @@
-
 import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Database, Droplets, Thermometer, AlertTriangle } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 const IoTDashboard = () => {
   const { language, iotData, addAlert } = useApp();

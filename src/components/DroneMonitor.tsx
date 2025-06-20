@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Video, MapPin, Camera, AlertTriangle, Flame, Bug } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface Detection {
   id: string;

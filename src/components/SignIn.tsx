@@ -1,15 +1,14 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 const SignIn = () => {
   const { language, signIn } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [isLoading, setIsLoading] = useState(false);

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,12 +9,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Bell, User, Globe, WifiOff, Menu, X, Settings, HelpCircle } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 import { useState } from 'react';
 
 const Navigation = () => {
   const { language, setLanguage, user, signOut, alerts, isOnline } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const languages = {

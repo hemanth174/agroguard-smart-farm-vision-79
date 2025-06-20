@@ -1,36 +1,36 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, PlayCircle, Wrench, FileText, Droplets } from 'lucide-react';
 import DrainagePlanner from './DrainagePlanner';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface FarmingServicesCardProps {
   language: string;
 }
 
 const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
+
   const [activeService, setActiveService] = useState<string | null>(null);
 
   const services = [
     {
       id: 'shopping',
       icon: ShoppingCart,
-      title: t('shopping'),
-      description: t('shopDesc'),
+      title: 'Shopping',
+      description: 'Buy farming tools and supplies',
       color: 'blue',
-      action: t('browse')
+      action: 'Browse'
     },
     {
       id: 'videos',
       icon: PlayCircle,
-      title: t('videos'),
-      description: t('videoDesc'),
+      title: 'Video Guides',
+      description: 'Learn farming techniques',
       color: 'green',
-      action: t('watch')
+      action: 'Watch'
     },
     {
       id: 'drainage',
@@ -43,18 +43,18 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
     {
       id: 'tools',
       icon: Wrench,
-      title: t('tools'),
-      description: t('toolsDesc'),
+      title: 'Smart Tools',
+      description: 'AI-powered farming tools',
       color: 'purple',
-      action: t('plan')
+      action: 'Plan'
     },
     {
       id: 'contracts',
       icon: FileText,
-      title: t('contracts'),
-      description: t('contractsDesc'),
+      title: 'Contracts',
+      description: 'Field service contracts',
       color: 'orange',
-      action: t('apply')
+      action: 'Apply'
     }
   ];
 
@@ -86,7 +86,7 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Drainage System Planner</h2>
           <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('back')}
+            Back to Services
           </Button>
         </div>
         <DrainagePlanner />
@@ -100,7 +100,7 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Farming Video Guides</h2>
           <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('back')}
+            Back to Services
           </Button>
         </div>
         
@@ -137,7 +137,7 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">Farming Shop</h2>
           <Button variant="outline" onClick={() => setActiveService(null)}>
-            {t('back')}
+            Back to Services
           </Button>
         </div>
         
@@ -183,7 +183,7 @@ const FarmingServicesCard = ({ language }: FarmingServicesCardProps) => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">{t('servicesTitle')}</h2>
+      <h2 className="text-2xl font-bold text-gray-900">Farming Services</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow border-2 cursor-pointer" onClick={() => handleServiceClick(service.id)}>

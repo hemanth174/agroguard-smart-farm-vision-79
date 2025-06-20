@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation } from '@/utils/i18n';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface DrainagePlan {
   farmSize: number;
@@ -20,7 +19,7 @@ interface DrainagePlan {
 
 const DrainagePlanner = () => {
   const { language } = useApp();
-  const { t } = useTranslation(language);
+  const { t } = useTranslation(language as Language);
   const [farmSize, setFarmSize] = useState<string>('');
   const [rainfall, setRainfall] = useState<string>('');
   const [soilType, setSoilType] = useState<string>('clay');
