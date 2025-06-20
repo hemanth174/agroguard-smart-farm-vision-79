@@ -9,6 +9,7 @@ import IoTDashboard from '@/components/IoTDashboard';
 import WeatherService from '@/components/WeatherService';
 import FarmingServicesCard from '@/components/FarmingServicesCard';
 import DroneVideoUpload from '@/components/DroneVideoUpload';
+import DroneVideoDetection from '@/components/DroneVideoDetection';
 import DroneMonitor from '@/components/DroneMonitor';
 import ContractsManagement from '@/components/ContractsManagement';
 import PlantHealthDatabase from '@/components/PlantHealthDatabase';
@@ -43,6 +44,8 @@ const Index = () => {
     switch (activeService) {
       case 'drone-video':
         return <DroneVideoUpload />;
+      case 'drone-detection':
+        return <DroneVideoDetection />;
       case 'drone-monitor':
         return <DroneMonitor />;
       case 'contracts':
@@ -97,6 +100,21 @@ const Index = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* AI Video Detection Section */}
+        <div id="ai-detection">
+          <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold flex items-center gap-2">
+                🤖 AI Video Detection System
+                <Badge className="bg-green-100 text-green-800">Telugu Alerts</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DroneVideoDetection />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Dashboard Grid */}
@@ -160,7 +178,7 @@ const Index = () => {
         <div id="support">
           <Card className="bg-white/90 backdrop-blur-sm shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('support')} & {t('emergency')}</CardTitle>
+              <CardTitle className="text-xl font-bold">{t('support')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div>
