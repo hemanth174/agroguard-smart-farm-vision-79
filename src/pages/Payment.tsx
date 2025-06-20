@@ -86,17 +86,13 @@ const Payment = () => {
     setProcessing(true);
     
     try {
-      // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      // Simulate payment success (90% success rate)
       const isSuccess = Math.random() > 0.1;
       
       if (isSuccess) {
         setPaymentSuccess(true);
         setCurrentStep(4);
-        
-        // Clear payment data from localStorage
         localStorage.removeItem('paymentData');
       } else {
         throw new Error('Payment failed');

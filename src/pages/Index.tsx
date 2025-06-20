@@ -16,7 +16,7 @@ import PlantHealthDatabase from '@/components/PlantHealthDatabase';
 import DrainagePlanner from '@/components/DrainagePlanner';
 import IoTTester from '@/components/IoTTester';
 import EmergencySection from '@/components/EmergencySection';
-import MarketPricesCard from '@/components/MarketPricesCard';
+import ShoppingService from '@/components/services/ShoppingService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -75,6 +75,8 @@ const Index = () => {
         return <DrainagePlanner />;
       case 'iot-tester':
         return <IoTTester />;
+      case 'shopping':
+        return <ShoppingService />;
       default:
         return <FarmingServicesCard onServiceSelect={setActiveService} />;
     }
