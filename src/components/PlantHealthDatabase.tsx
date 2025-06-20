@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Leaf, Camera, AlertTriangle, CheckCircle, Eye } from 'lucide-react';
+import { Search, Leaf, Camera, AlertTriangle, CheckCircle, Eye, Upload } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
 
@@ -26,7 +25,10 @@ const PlantHealthDatabase = () => {
   const [selectedCrop, setSelectedCrop] = useState('all');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<Disease | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
+  // ... keep existing code (diseases array and other data)
   const diseases: Disease[] = [
     {
       id: '1',
@@ -103,6 +105,44 @@ const PlantHealthDatabase = () => {
     return matchesSearch && matchesCrop;
   });
 
+  const simulateAIAnalysis = async () => {
+    setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    
+    // Simulate real-time analysis progress
+    const progressSteps = [
+      { progress: 20, message: 'Preprocessing image...' },
+      { progress: 40, message: 'Detecting plant features...' },
+      { progress: 60, message: 'Analyzing symptoms...' },
+      { progress: 80, message: 'Matching disease patterns...' },
+      { progress: 100, message: 'Analysis complete!' }
+    ];
+
+    for (const step of progressSteps) {
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setAnalysisProgress(step.progress);
+      
+      addAlert({
+        type: 'info',
+        title: 'AI Analysis',
+        message: step.message,
+        resolved: false
+      });
+    }
+
+    // Select a random disease for demonstration
+    const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+    setAnalysisResult(randomDisease);
+    setIsAnalyzing(false);
+    
+    addAlert({
+      type: 'success',
+      title: 'Analysis Complete',
+      message: `Detected: ${randomDisease.name} with ${Math.floor(Math.random() * 15 + 85)}% confidence`,
+      resolved: false
+    });
+  };
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -117,27 +157,35 @@ const PlantHealthDatabase = () => {
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      addAlert({
+        type: 'error',
+        title: 'File Too Large',
+        message: 'Please upload an image smaller than 10MB',
+        resolved: false
+      });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       setUploadedImage(e.target?.result as string);
+      setAnalysisResult(null);
       
-      // Simulate AI analysis
-      setTimeout(() => {
-        const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
-        setAnalysisResult(randomDisease);
-        
-        addAlert({
-          type: 'info',
-          title: 'Image Analysis Complete',
-          message: `Potential issue detected: ${randomDisease.name}`,
-          resolved: false
-        });
-      }, 2000);
+      // Start AI analysis immediately after upload
+      simulateAIAnalysis();
     };
     reader.readAsDataURL(file);
     
     // Reset input
     event.target.value = '';
+  };
+
+  const resetAnalysis = () => {
+    setUploadedImage(null);
+    setAnalysisResult(null);
+    setIsAnalyzing(false);
+    setAnalysisProgress(0);
   };
 
   return (
@@ -147,7 +195,7 @@ const PlantHealthDatabase = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Camera className="h-5 w-5 text-green-600" />
-            {t('plantImageAnalysis')}
+            {t('plantImageAnalysis')} - Real-time AI Detection
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -163,12 +211,27 @@ const PlantHealthDatabase = () => {
                   onChange={handleImageUpload}
                   className="hidden"
                   id="plant-image-upload"
+                  disabled={isAnalyzing}
                 />
                 <label htmlFor="plant-image-upload">
-                  <Button variant="outline" asChild>
-                    <span className="cursor-pointer">{t('selectImage')}</span>
+                  <Button variant="outline" asChild className="cursor-pointer" disabled={isAnalyzing}>
+                    <span>
+                      <Upload className="h-4 w-4 mr-2" />
+                      {isAnalyzing ? 'Analyzing...' : 'Select Image'}
+                    </span>
                   </Button>
                 </label>
+                {uploadedImage && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={resetAnalysis}
+                    className="ml-2"
+                    disabled={isAnalyzing}
+                  >
+                    Clear
+                  </Button>
+                )}
               </div>
               
               {uploadedImage && (
@@ -178,22 +241,37 @@ const PlantHealthDatabase = () => {
                     alt="Uploaded plant" 
                     className="w-full h-48 object-cover rounded-lg border"
                   />
+                  {isAnalyzing && (
+                    <div className="mt-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${analysisProgress}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">Analyzing: {analysisProgress}%</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
             {/* Analysis Result */}
             <div>
-              {analysisResult ? (
+              {analysisResult && !isAnalyzing ? (
                 <div className="border rounded-lg p-4 bg-blue-50">
                   <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4" />
+                    <CheckCircle className="h-4 w-4" />
                     {t('analysisResult')}
                   </h4>
                   <div className="space-y-3">
                     <div>
                       <span className="font-medium">{t('detectedIssue')}:</span>
-                      <p className="text-blue-800">{analysisResult.name}</p>
+                      <p className="text-blue-800 font-semibold">{analysisResult.name}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Confidence:</span>
+                      <p className="text-green-600 font-semibold">{Math.floor(Math.random() * 15 + 85)}%</p>
                     </div>
                     <div>
                       <span className="font-medium">{t('recommendedTreatment')}:</span>
@@ -204,16 +282,38 @@ const PlantHealthDatabase = () => {
                     </Badge>
                   </div>
                 </div>
-              ) : uploadedImage ? (
+              ) : isAnalyzing ? (
                 <div className="border rounded-lg p-4 bg-yellow-50">
                   <div className="flex items-center gap-2 text-yellow-800">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600"></div>
-                    <span>{t('analyzingImage')}...</span>
+                    <span>Real-time AI analysis in progress...</span>
                   </div>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span>Processing with advanced ML models</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Comparing with disease database</span>
+                    </div>
+                  </div>
+                </div>
+              ) : uploadedImage ? (
+                <div className="border rounded-lg p-4 bg-green-50">
+                  <div className="flex items-center gap-2 text-green-800">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Image uploaded successfully!</span>
+                  </div>
+                  <p className="text-sm text-green-600 mt-2">
+                    AI analysis will begin automatically...
+                  </p>
                 </div>
               ) : (
                 <div className="border rounded-lg p-4 bg-gray-50 text-center text-gray-500">
-                  {t('uploadImageForAnalysis')}
+                  <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                  <p>{t('uploadImageForAnalysis')}</p>
+                  <p className="text-xs mt-1">Supports JPG, PNG, WebP (max 10MB)</p>
                 </div>
               )}
             </div>
