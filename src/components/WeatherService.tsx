@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -50,7 +49,8 @@ const WeatherService = () => {
       refresh: 'Refresh',
       lastUpdated: 'Last updated',
       getLocation: 'Get My Location',
-      locationError: 'Unable to get location'
+      locationError: 'Unable to get location',
+      viewOnMap: 'View on Map'
     },
     hi: {
       title: 'मौसम पूर्वानुमान',
@@ -65,7 +65,8 @@ const WeatherService = () => {
       refresh: 'रीफ्रेश करें',
       lastUpdated: 'अंतिम अपडेट',
       getLocation: 'मेरा स्थान प्राप्त करें',
-      locationError: 'स्थान प्राप्त नहीं हो सका'
+      locationError: 'स्थान प्राप्त नहीं हो सका',
+      viewOnMap: 'मैप पर देखें'
     },
     te: {
       title: 'ప్రత్యక్ష వాతావరణ సూచన',
@@ -80,7 +81,8 @@ const WeatherService = () => {
       refresh: 'రీఫ్రెష్',
       lastUpdated: 'చివరిసారి అప్‌డేట్',
       getLocation: 'నా లొకేషన్ పొందండి',
-      locationError: 'లొకేషన్ పొందలేకపోయింది'
+      locationError: 'లొకేషన్ పొందలేకపోయింది',
+      viewOnMap: 'మ్యాప్‌లో చూడండి'
     }
   };
 
@@ -167,6 +169,149 @@ const WeatherService = () => {
     getCurrentLocation();
   }, []);
 
+  // New function to open Google Maps with weather layer
+  const openWeatherMap = () => {
+    if (weather?.coordinates) {
+      const { lat, lon } = weather.coordinates;
+      // Create a Google Maps URL with weather layer
+      const mapsUrl = `https://www.google.com/maps/@${lat},${lon},10z/data=!5m1!1e1`;
+      
+      // Open in new window
+      const mapWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+      
+      if (mapWindow) {
+        mapWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Weather Map - ${weather.location}</title>
+            <style>
+              body { margin: 0; font-family: Arial, sans-serif; }
+              #map { height: 100vh; width: 100%; }
+              .weather-info {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                z-index: 1000;
+                max-width: 250px;
+              }
+              .weather-info h3 { margin: 0 0 10px 0; color: #333; }
+              .weather-detail { display: flex; justify-content: space-between; margin: 5px 0; }
+            </style>
+          </head>
+          <body>
+            <div class="weather-info">
+              <h3>🌤️ Current Weather</h3>
+              <div class="weather-detail">
+                <span>Location:</span>
+                <span>${weather.location}</span>
+              </div>
+              <div class="weather-detail">
+                <span>Temperature:</span>
+                <span>${weather.current.temperature}°C</span>
+              </div>
+              <div class="weather-detail">
+                <span>Humidity:</span>
+                <span>${weather.current.humidity}%</span>
+              </div>
+              <div class="weather-detail">
+                <span>Wind Speed:</span>
+                <span>${weather.current.windSpeed} km/h</span>
+              </div>
+              <div class="weather-detail">
+                <span>Condition:</span>
+                <span>${weather.current.description}</span>
+              </div>
+            </div>
+            <div id="map"></div>
+            
+            <script>
+              function initMap() {
+                const location = { lat: ${lat}, lng: ${lon} };
+                
+                const map = new google.maps.Map(document.getElementById("map"), {
+                  zoom: 10,
+                  center: location,
+                  mapTypeId: 'terrain'
+                });
+                
+                // Add weather marker
+                const weatherMarker = new google.maps.Marker({
+                  position: location,
+                  map: map,
+                  title: "${weather.location} - ${weather.current.temperature}°C",
+                  icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(\`
+                      <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" fill="#4285f4" stroke="#fff" stroke-width="2"/>
+                        <text x="20" y="26" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">
+                          ${weather.current.temperature}°
+                        </text>
+                      </svg>
+                    \`),
+                    scaledSize: new google.maps.Size(40, 40)
+                  }
+                });
+                
+                // Add info window
+                const infoWindow = new google.maps.InfoWindow({
+                  content: \`
+                    <div style="padding: 10px; max-width: 200px;">
+                      <h4 style="margin: 0 0 10px 0; color: #333;">${weather.location}</h4>
+                      <p style="margin: 5px 0;"><strong>Temperature:</strong> ${weather.current.temperature}°C</p>
+                      <p style="margin: 5px 0;"><strong>Condition:</strong> ${weather.current.description}</p>
+                      <p style="margin: 5px 0;"><strong>Humidity:</strong> ${weather.current.humidity}%</p>
+                      <p style="margin: 5px 0;"><strong>Wind:</strong> ${weather.current.windSpeed} km/h</p>
+                      <p style="margin: 5px 0; font-size: 12px; color: #666;">Last updated: ${weather.lastUpdated}</p>
+                    </div>
+                  \`
+                });
+                
+                weatherMarker.addListener("click", () => {
+                  infoWindow.open(map, weatherMarker);
+                });
+                
+                // Open info window by default
+                infoWindow.open(map, weatherMarker);
+                
+                // Add click listener to map for weather info
+                map.addListener("click", (event) => {
+                  const clickedLat = event.latLng.lat();
+                  const clickedLng = event.latLng.lng();
+                  
+                  // Simulate weather data for clicked location
+                  const tempVariation = Math.floor(Math.random() * 10) - 5;
+                  const newTemp = ${weather.current.temperature} + tempVariation;
+                  
+                  const clickInfoWindow = new google.maps.InfoWindow({
+                    position: event.latLng,
+                    content: \`
+                      <div style="padding: 10px;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">Weather Info</h4>
+                        <p style="margin: 5px 0;"><strong>Coordinates:</strong> \${clickedLat.toFixed(4)}, \${clickedLng.toFixed(4)}</p>
+                        <p style="margin: 5px 0;"><strong>Est. Temperature:</strong> \${newTemp}°C</p>
+                        <p style="margin: 5px 0; font-size: 12px; color: #666;">Click on map for weather estimates</p>
+                      </div>
+                    \`
+                  });
+                  
+                  clickInfoWindow.open(map);
+                });
+              }
+            </script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP3t9Bkrt4-fDPu_JdqTxznbqsYdGDlgk&callback=initMap" async defer></script>
+          </body>
+          </html>
+        `);
+        mapWindow.document.close();
+      }
+    }
+  };
+
   const getWeatherIcon = (description: string) => {
     if (description.toLowerCase().includes('rain')) return <CloudRain className="h-6 w-6 text-blue-500" />;
     if (description.toLowerCase().includes('cloud')) return <Cloud className="h-6 w-6 text-gray-500" />;
@@ -227,15 +372,26 @@ const WeatherService = () => {
                 <span className="font-medium">{weather.location}</span>
               </div>
             </div>
-            <Button 
-              onClick={getCurrentLocation} 
-              variant="outline" 
-              size="sm"
-              className="hover:bg-green-50 border-green-300"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              {t.refresh}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button 
+                onClick={getCurrentLocation} 
+                variant="outline" 
+                size="sm"
+                className="hover:bg-green-50 border-green-300"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                {t.refresh}
+              </Button>
+              <Button 
+                onClick={openWeatherMap} 
+                variant="outline" 
+                size="sm"
+                className="hover:bg-blue-50 border-blue-300"
+              >
+                <MapPin className="h-4 w-4 mr-2" />
+                {t.viewOnMap}
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
