@@ -8,6 +8,7 @@ import { AppProvider } from "./contexts/AppContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Payment from "./pages/Payment";
+import MarketPrices from "./pages/MarketPrices";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/market-prices" element={<MarketPrices />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

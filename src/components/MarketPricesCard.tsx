@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+import { TrendingUp, TrendingDown, RefreshCw, ExternalLink } from 'lucide-react';
 import { useTranslation, Language } from '@/utils/i18n';
+import { useNavigate } from 'react-router-dom';
 
 interface MarketPricesCardProps {
   language: string;
@@ -12,6 +13,7 @@ interface MarketPricesCardProps {
 
 const MarketPricesCard = ({ language }: MarketPricesCardProps) => {
   const { t } = useTranslation(language as Language);
+  const navigate = useNavigate();
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [priceData, setPriceData] = useState([
@@ -70,16 +72,27 @@ const MarketPricesCard = ({ language }: MarketPricesCardProps) => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold">{t('marketPrices')}</CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => navigate('/market-prices')}
+              className="flex items-center gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View All
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
