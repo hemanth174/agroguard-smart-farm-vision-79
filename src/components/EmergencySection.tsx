@@ -31,7 +31,7 @@ const EmergencySection = () => {
     {
       id: 'emergency-call',
       title: t('emergencyCall'),
-      description: 'Call emergency services',
+      description: 'Call emergency services immediately',
       icon: Phone,
       color: 'bg-red-100 text-red-700 hover:bg-red-200',
       urgent: true
@@ -39,7 +39,7 @@ const EmergencySection = () => {
     {
       id: 'report-issue',
       title: t('reportIssue'),
-      description: 'Report a farming issue',
+      description: 'Report a farming or safety issue',
       icon: MessageSquare,
       color: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
       urgent: false
@@ -47,7 +47,7 @@ const EmergencySection = () => {
     {
       id: 'alert-center',
       title: 'Alert Center',
-      description: 'View active alerts',
+      description: 'View and manage active alerts',
       icon: Bell,
       color: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
       urgent: false
@@ -55,7 +55,7 @@ const EmergencySection = () => {
     {
       id: 'drone-patrol',
       title: 'Drone Patrol',
-      description: 'Monitor with AI drones',
+      description: 'Monitor fields with AI drones',
       icon: Plane,
       color: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
       urgent: false
@@ -309,12 +309,13 @@ const EmergencySection = () => {
   };
 
   return (
-    <Card className="border-red-200 shadow-lg">
+    <Card className="border-red-200 shadow-lg max-w-4xl mx-auto">
       <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50">
-        <CardTitle className="flex items-center gap-2 text-red-700">
-          <AlertTriangle className="w-5 h-5" />
+        <CardTitle className="flex items-center gap-2 text-red-700 text-xl">
+          <AlertTriangle className="w-6 h-6" />
           {t('emergencySection')}
         </CardTitle>
+        <p className="text-sm text-gray-600 mt-2">Quick access to emergency services and safety tools</p>
       </CardHeader>
       <CardContent className="p-6">
         {selectedAction ? (
@@ -322,7 +323,7 @@ const EmergencySection = () => {
             <Button 
               variant="outline" 
               onClick={() => setSelectedAction(null)}
-              className="mb-4"
+              className="mb-6"
             >
               ← Back to Emergency Actions
             </Button>
@@ -330,33 +331,41 @@ const EmergencySection = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <div className="w-full max-w-2xl space-y-4">
-              {emergencyActions.map((action) => (
-                <Card 
-                  key={action.id}
-                  className={`cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 ${
-                    action.urgent ? 'border-red-300' : 'border-gray-200'
-                  }`}
-                  onClick={() => setSelectedAction(action.id)}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-16 h-16 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0`}>
-                        <action.icon className="w-8 h-8" />
+            {/* FIXED: Vertical layout with proper spacing */}
+            <div className="w-full max-w-2xl mx-auto">
+              <div className="flex flex-col gap-4">
+                {emergencyActions.map((action) => (
+                  <Card 
+                    key={action.id}
+                    className={`cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02] ${
+                      action.urgent ? 'border-2 border-red-300 shadow-md' : 'border border-gray-200'
+                    }`}
+                    onClick={() => setSelectedAction(action.id)}
+                  >
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0 transition-colors`}>
+                          <action.icon className="w-6 h-6 sm:w-8 sm:h-8" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-base sm:text-lg mb-1 truncate">{action.title}</h4>
+                          <p className="text-sm text-gray-600 line-clamp-2">{action.description}</p>
+                          {action.urgent && (
+                            <Badge variant="destructive" className="mt-2 text-xs animate-pulse">
+                              🚨 URGENT
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-gray-400">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-lg mb-1">{action.title}</h4>
-                        <p className="text-sm text-gray-600">{action.description}</p>
-                        {action.urgent && (
-                          <Badge variant="destructive" className="mt-2 text-xs">
-                            URGENT
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         )}
