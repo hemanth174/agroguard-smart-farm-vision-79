@@ -8,16 +8,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell, User, Globe, WifiOff, Menu, X, Settings, HelpCircle, Phone } from 'lucide-react';
+import { Bell, User, Globe, WifiOff, Menu, Settings, HelpCircle, Phone, LogOut } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useTranslation, Language } from '@/utils/i18n';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Navigation = () => {
+interface NavigationProps {
+  onMenuToggle: () => void;
+}
+
+const Navigation = ({ onMenuToggle }: NavigationProps) => {
   const { language, setLanguage, user, signOut, alerts, isOnline } = useApp();
   const { t } = useTranslation(language as Language);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const navigate = useNavigate();
 
   const languages = {
     en: { name: 'English', flag: '🇺🇸' },
@@ -33,59 +37,54 @@ const Navigation = () => {
 
   const activeAlerts = alerts.filter(alert => !alert.resolved);
 
-  const navItems = [
-    { label: t('dashboard'), href: '#dashboard', id: 'dashboard' },
-    { label: t('services'), href: '#services', id: 'services' },
-    { label: t('market'), href: '#market', id: 'market' },
-    { label: t('support'), href: '#support', id: 'support' }
-  ];
-
-  const handleNavClick = (sectionId: string) => {
-    setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleProfileNavigation = (page: string) => {
+    switch (page) {
+      case 'profile':
+        navigate('/profile');
+        break;
+      case 'settings':
+        navigate('/settings');
+        break;
+      case 'support':
+        navigate('/support');
+        break;
+      case 'logout':
+        signOut();
+        break;
     }
-    setMobileMenuOpen(false);
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Left side with menu and logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-lg">VE</span>
-            </div>
-            <div>
-              <span className="text-xl font-bold text-gray-900">VillageEye</span>
-              <div className="flex items-center gap-2">
-                {!isOnline && (
-                  <Badge variant="destructive" className="flex items-center gap-1 text-xs">
-                    <WifiOff className="w-3 h-3" />
-                    {t('offline')}
-                  </Badge>
-                )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMenuToggle}
+              className="lg:hidden"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+            
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-lg">VE</span>
+              </div>
+              <div>
+                <span className="text-xl font-bold text-gray-900">VillageEye</span>
+                <div className="flex items-center gap-2">
+                  {!isOnline && (
+                    <Badge variant="destructive" className="flex items-center gap-1 text-xs">
+                      <WifiOff className="w-3 h-3" />
+                      {t('offline')}
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className={`transition-colors font-medium px-3 py-2 rounded-md ${
-                  activeSection === item.id 
-                    ? 'text-green-600 bg-green-50' 
-                    : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
           </div>
 
           {/* Right Side Actions */}
@@ -154,7 +153,7 @@ const Navigation = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* User Menu - Fixed overflow issue */}
+            {/* User Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="gap-2 max-w-40">
@@ -162,84 +161,39 @@ const Navigation = () => {
                   <span className="hidden sm:inline truncate">{user?.name}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white z-50">
-                <DropdownMenuItem className="flex items-center gap-2">
+              <DropdownMenuContent align="end" className="w-48 bg-white z-50 shadow-lg">
+                <DropdownMenuItem 
+                  onClick={() => handleProfileNavigation('profile')}
+                  className="flex items-center gap-2 hover:bg-green-50"
+                >
                   <User className="w-4 h-4" />
                   {t('profile')}
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
+                <DropdownMenuItem 
+                  onClick={() => handleProfileNavigation('settings')}
+                  className="flex items-center gap-2 hover:bg-blue-50"
+                >
                   <Settings className="w-4 h-4" />
                   {t('settings')}
                 </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
+                <DropdownMenuItem 
+                  onClick={() => handleProfileNavigation('support')}
+                  className="flex items-center gap-2 hover:bg-purple-50"
+                >
                   <HelpCircle className="w-4 h-4" />
                   {t('support')}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 text-red-600">
+                <DropdownMenuItem 
+                  onClick={() => handleProfileNavigation('logout')}
+                  className="flex items-center gap-2 text-red-600 hover:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4" />
                   {t('signOut')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            </Button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4 bg-white">
-            <div className="space-y-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
-                    activeSection === item.id 
-                      ? 'text-green-600 bg-green-50' 
-                      : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-              
-              {/* Mobile Emergency Button */}
-              <a 
-                href="tel:6305003695" 
-                className="block w-full text-left px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-              >
-                📞 {t('emergency')}: 6305003695
-              </a>
-            </div>
-            
-            {/* Mobile Language Selector */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-sm font-medium text-gray-500 mb-2">{t('language')}</p>
-              <div className="grid grid-cols-3 gap-2">
-                {Object.entries(languages).map(([key, lang]) => (
-                  <Button
-                    key={key}
-                    variant={language === key ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setLanguage(key as any)}
-                    className="flex items-center gap-1 text-xs"
-                  >
-                    <span>{lang.flag}</span>
-                    <span className="truncate">{lang.name}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );

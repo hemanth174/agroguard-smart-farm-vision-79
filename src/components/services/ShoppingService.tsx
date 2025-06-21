@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,7 @@ const ShoppingService = () => {
 
   const categories = ['all', 'Seeds', 'Fertilizers', 'Tools', 'Testing', 'IoT', 'Materials', 'Irrigation'];
 
-  // Mock products data with placeholder images
+  // Mock products data with updated images
   const mockProducts: Product[] = [
     {
       id: '1',
@@ -52,7 +51,7 @@ const ShoppingService = () => {
       description: 'High quality hybrid tomato seeds for better yield',
       price: 150,
       category: 'Seeds',
-      image_url: 'https://images.unsplash.com/photo-1592921870789-04563d55041c?w=400&h=300&fit=crop',
+      image_url: '/lovable-uploads/ddd4351f-f5e7-4fa8-ad9f-af0173c5431f.png',
       in_stock: true
     },
     {
@@ -79,7 +78,7 @@ const ShoppingService = () => {
       description: 'Digital soil pH meter for testing',
       price: 1200,
       category: 'Testing',
-      image_url: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=300&fit=crop',
+      image_url: '/lovable-uploads/5e2dbe7e-fb59-41ed-85d8-7bc1f46fc287.png',
       in_stock: true
     },
     {
