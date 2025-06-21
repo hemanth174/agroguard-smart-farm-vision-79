@@ -109,7 +109,6 @@ const EmergencySection = () => {
   ];
 
   const handleEmergencyCall = () => {
-    // In a real app, this would trigger an actual call
     addAlert({
       type: 'error',
       title: 'Emergency Call Initiated',
@@ -136,7 +135,6 @@ const EmergencySection = () => {
 
   const toggleVoiceInput = () => {
     setIsListening(!isListening);
-    // In a real app, this would start/stop speech recognition
     if (!isListening) {
       setTimeout(() => {
         setIsListening(false);
@@ -331,29 +329,35 @@ const EmergencySection = () => {
             {renderActionContent()}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {emergencyActions.map((action) => (
-              <Card 
-                key={action.id}
-                className={`cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 ${
-                  action.urgent ? 'border-red-300' : 'border-gray-200'
-                }`}
-                onClick={() => setSelectedAction(action.id)}
-              >
-                <CardContent className="p-4 text-center">
-                  <div className={`w-12 h-12 rounded-lg ${action.color} flex items-center justify-center mx-auto mb-3`}>
-                    <action.icon className="w-6 h-6" />
-                  </div>
-                  <h4 className="font-semibold mb-1">{action.title}</h4>
-                  <p className="text-xs text-gray-600">{action.description}</p>
-                  {action.urgent && (
-                    <Badge variant="destructive" className="mt-2 text-xs">
-                      URGENT
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex flex-col items-center">
+            <div className="w-full max-w-2xl space-y-4">
+              {emergencyActions.map((action) => (
+                <Card 
+                  key={action.id}
+                  className={`cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 ${
+                    action.urgent ? 'border-red-300' : 'border-gray-200'
+                  }`}
+                  onClick={() => setSelectedAction(action.id)}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-16 h-16 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0`}>
+                        <action.icon className="w-8 h-8" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-lg mb-1">{action.title}</h4>
+                        <p className="text-sm text-gray-600">{action.description}</p>
+                        {action.urgent && (
+                          <Badge variant="destructive" className="mt-2 text-xs">
+                            URGENT
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         )}
       </CardContent>
