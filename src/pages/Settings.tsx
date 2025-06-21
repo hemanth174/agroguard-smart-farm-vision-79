@@ -7,8 +7,10 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Settings as SettingsIcon, Lock, Globe, Bell, Moon, Sun, Save } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
-import { useTranslation, Language } from '@/utils/i18n';
+import { useTranslation, Language, getLanguageDetails } from '@/utils/i18n';
 import { useToast } from '@/hooks/use-toast';
+import BackButton from '@/components/BackButton';
+import LanguageIndicator from '@/components/LanguageIndicator';
 
 const Settings = () => {
   const { language, setLanguage } = useApp();
@@ -21,17 +23,7 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const languages = {
-    en: { name: 'English', flag: '🇺🇸' },
-    hi: { name: 'हिंदी', flag: '🇮🇳' },
-    te: { name: 'తెలుగు', flag: '🇮🇳' },
-    zh: { name: '中文', flag: '🇨🇳' },
-    es: { name: 'Español', flag: '🇪🇸' },
-    mr: { name: 'मराठी', flag: '🇮🇳' },
-    gu: { name: 'ગુજરાતી', flag: '🇮🇳' },
-    kn: { name: 'ಕನ್ನಡ', flag: '🇮🇳' },
-    ta: { name: 'தமிழ்', flag: '🇮🇳' }
-  };
+  const languages: Language[] = ['en', 'hi', 'te', 'kn', 'ta', 'gu', 'mr'];
 
   const handlePasswordChange = () => {
     if (newPassword !== confirmPassword) {
@@ -69,10 +61,21 @@ const Settings = () => {
     });
   };
 
+  const handleLanguageChange = (newLanguage: Language) => {
+    setLanguage(newLanguage);
+    toast({
+      title: 'Language Changed',
+      description: `Interface language changed to ${getLanguageDetails(newLanguage).nativeName}`,
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <BackButton />
+      <LanguageIndicator />
+      
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('settings')}</h1>
         <p className="text-gray-600">Manage your account preferences and security</p>
       </div>
 
@@ -82,26 +85,32 @@ const Settings = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="w-5 h-5 text-green-600" />
-              Language & Region
+              {t('language')} & Region
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Select Language</label>
-              <div className="grid grid-cols-3 gap-2">
-                {Object.entries(languages).map(([key, lang]) => (
-                  <Button
-                    key={key}
-                    variant={language === key ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setLanguage(key as any)}
-                    className="flex items-center gap-2"
-                  >
-                    <span>{lang.flag}</span>
-                    <span className="hidden sm:inline">{lang.name}</span>
-                  </Button>
-                ))}
+              <label className="block text-sm font-medium mb-2">Select {t('language')}</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {languages.map((lang) => {
+                  const langInfo = getLanguageDetails(lang);
+                  return (
+                    <Button
+                      key={lang}
+                      variant={language === lang ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleLanguageChange(lang)}
+                      className="flex items-center gap-2 justify-start"
+                    >
+                      <span>{langInfo.flag}</span>
+                      <span className="hidden sm:inline">{langInfo.nativeName}</span>
+                    </Button>
+                  );
+                })}
               </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Current: {getLanguageDetails(language as Language).nativeName}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -111,13 +120,13 @@ const Settings = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="w-5 h-5 text-blue-600" />
-              Notifications
+              {t('notifications')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Push Notifications</p>
+                <p className="font-medium">Push {t('notifications')}</p>
                 <p className="text-sm text-gray-600">Receive alerts and updates</p>
               </div>
               <Switch
@@ -217,7 +226,7 @@ const Settings = () => {
           size="lg"
         >
           <Save className="w-4 h-4 mr-2" />
-          Save All Settings
+          {t('save')} All {t('settings')}
         </Button>
       </div>
     </div>
