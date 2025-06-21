@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { User } from '@/types/app';
 import { useToast } from '@/hooks/use-toast';
@@ -95,6 +96,7 @@ export const useAuth = () => {
     setUser,
     signIn,
     signOut,
+    initializeAuth,
     isSignedIn: !!user,
     isAdmin: user?.name === 'admin'
   };
