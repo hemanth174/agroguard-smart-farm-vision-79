@@ -159,7 +159,7 @@ const MarketPrices = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
+      <Navigation onMenuToggle={() => {}} />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}

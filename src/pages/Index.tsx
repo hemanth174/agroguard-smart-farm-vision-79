@@ -26,7 +26,7 @@ const Index = () => {
       case 'emergency':
         return <EmergencySection />;
       case 'alerts':
-        return <AlertsCard />;
+        return <AlertsCard language={language} />;
       case 'drone':
         return <DroneVideoDetection />;
       case 'shopping':
@@ -46,12 +46,12 @@ const Index = () => {
 
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <WeatherCard />
-              <DronePatrolCard />
-              <PlantHealthCard />
-              <MarketPricesCard />
-              <IoTSensorsCard />
-              <AlertsCard />
+              <WeatherCard language={language} location="Village Center" />
+              <DronePatrolCard language={language} />
+              <PlantHealthCard language={language} />
+              <MarketPricesCard language={language} />
+              <IoTSensorsCard language={language} />
+              <AlertsCard language={language} />
             </div>
 
             {/* Emergency Section */}
