@@ -30,11 +30,11 @@ const Sidebar = ({ isOpen, onClose, activeSection, onSectionChange }: SidebarPro
 
   const menuItems = [
     { id: 'dashboard', label: t('dashboard'), icon: Home, badge: null },
-    { id: 'emergency', label: 'Report Issue', icon: AlertTriangle, badge: null },
-    { id: 'alerts', label: 'Alert Center', icon: Bell, badge: alerts.filter(a => !a.resolved).length },
-    { id: 'drone', label: 'Drone Monitor', icon: Plane, badge: null },
-    { id: 'market', label: 'Market Prices', icon: TrendingUp, badge: null },
-    { id: 'shopping', label: 'Shopping Cart', icon: ShoppingCart, badge: null },
+    { id: 'emergency', label: t('reportIssue'), icon: AlertTriangle, badge: null },
+    { id: 'alerts', label: t('alertCenter'), icon: Bell, badge: alerts.filter(a => !a.resolved).length },
+    { id: 'drone', label: t('droneMonitor'), icon: Plane, badge: null },
+    { id: 'market', label: t('marketPrices'), icon: TrendingUp, badge: null },
+    { id: 'shopping', label: t('shoppingCart'), icon: ShoppingCart, badge: null },
     { id: 'profile', label: t('profile'), icon: User, badge: null },
     { id: 'settings', label: t('settings'), icon: Settings, badge: null },
     { id: 'support', label: t('support'), icon: HelpCircle, badge: null }
