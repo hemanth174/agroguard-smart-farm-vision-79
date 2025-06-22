@@ -603,3 +603,19 @@ export const useTranslation = (language: Language) => {
 
   return { t };
 };
+
+export const getLanguageDetails = (lang: Language) => {
+  const details = {
+    en: { name: 'English', flag: '🇬🇧', nativeName: 'English' },
+    hi: { name: 'Hindi', flag: '🇮🇳', nativeName: 'हिंदी' },
+    te: { name: 'Telugu', flag: '🇮🇳', nativeName: 'తెలుగు' },
+    kn: { name: 'Kannada', flag: '🇮🇳', nativeName: 'ಕನ್ನಡ' },
+    ta: { name: 'Tamil', flag: '🇮🇳', nativeName: 'தமிழ்' },
+    gu: { name: 'Gujarati', flag: '🇮🇳', nativeName: 'ગુજરાતી' },
+    mr: { name: 'Marathi', flag: '🇮🇳', nativeName: 'मराठी' },
+    zh: { name: 'Chinese', flag: '🇨🇳', nativeName: '中文' },
+    es: { name: 'Spanish', flag: '🇪🇸', nativeName: 'Español' }
+  };
+  
+  return details[lang] || details.en;
+};
