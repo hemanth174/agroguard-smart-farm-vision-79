@@ -40,7 +40,8 @@ const PlantHealthCard = ({ language }: PlantHealthCardProps) => {
     }
   };
 
-  const t = translations[language];
+  // Use fallback to English if language not found
+  const t = translations[language as keyof typeof translations] || translations.en;
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
