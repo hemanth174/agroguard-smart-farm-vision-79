@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TrendingUp, TrendingDown, RefreshCw, AlertTriangle, Search, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
+import BackButton from '@/components/BackButton';
+import LanguageIndicator from '@/components/LanguageIndicator';
+import { useApp } from '@/contexts/AppContext';
+import { useTranslation, Language } from '@/utils/i18n';
 
 interface CropPrice {
   id: number;
@@ -21,6 +24,8 @@ interface CropPrice {
 }
 
 const MarketPrices = () => {
+  const { language } = useApp();
+  const { t } = useTranslation(language as Language);
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
@@ -29,62 +34,62 @@ const MarketPrices = () => {
   const [cropPrices] = useState<CropPrice[]>([
     {
       id: 1,
-      name: 'Rice',
+      name: t('rice'),
       price: 2450,
       unit: 'quintal',
       trend: 'up',
       change: 50,
-      lastUpdated: new Date(Date.now() - 30 * 60 * 1000), // 30 mins ago
+      lastUpdated: new Date(Date.now() - 30 * 60 * 1000),
       market: 'Mandal Market'
     },
     {
       id: 2,
-      name: 'Wheat',
+      name: t('wheat'),
       price: 2100,
       unit: 'quintal',
       trend: 'down',
       change: -25,
-      lastUpdated: new Date(Date.now() - 45 * 60 * 1000), // 45 mins ago
+      lastUpdated: new Date(Date.now() - 45 * 60 * 1000),
       market: 'District Market'
     },
     {
       id: 3,
-      name: 'Tomato',
+      name: t('tomato'),
       price: 35,
       unit: 'kg',
       trend: 'up',
       change: 8,
-      lastUpdated: new Date(Date.now() - 15 * 60 * 1000), // 15 mins ago
+      lastUpdated: new Date(Date.now() - 15 * 60 * 1000),
       market: 'Local Market'
     },
     {
       id: 4,
-      name: 'Cotton',
+      name: t('cotton'),
       price: 5800,
       unit: 'quintal',
       trend: 'stable',
       change: 0,
-      lastUpdated: new Date(Date.now() - 60 * 60 * 1000), // 1 hour ago
+      lastUpdated: new Date(Date.now() - 60 * 60 * 1000),
       market: 'Cotton Market'
     },
     {
       id: 5,
-      name: 'Onion',
+      name: t('onion'),
       price: 28,
       unit: 'kg',
       trend: 'down',
       change: -5,
-      lastUpdated: new Date(Date.now() - 20 * 60 * 1000), // 20 mins ago
+      lastUpdated: new Date(Date.now() - 20 * 60 * 1000),
       market: 'Vegetable Market'
     },
     {
       id: 6,
-      name: 'Potato',
+      name: t('potato'),
       price: 22,
       unit: 'kg',
       trend: 'up',
       change: 3,
-      lastUpdated: new Date(Date.now() - 25 * 60 * 1000), // 25 mins ago
+      lastUpdated: new Date(Date.now() - 25 * 60 * 1000),
       market: 'Vegetable Market'
     }
   ]);
@@ -162,9 +167,12 @@ const MarketPrices = () => {
       <Navigation onMenuToggle={() => {}} />
       
       <div className="container mx-auto px-4 py-8">
+        <BackButton />
+        <LanguageIndicator />
+        
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Local Crop Market Prices</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Local Crop {t('marketPrices')}</h1>
           <p className="text-gray-600">Real-time pricing information for local agricultural markets</p>
         </div>
 
